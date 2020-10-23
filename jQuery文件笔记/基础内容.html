@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jQery的知识点</title>
+		<style>
+			div {
+			    width: 200px;
+			    height: 200px;
+			    background-color: pink;
+			    padding: 10px;
+			    border: 15px solid red;
+			    margin: 20px;
+			}
+			.container {
+			    width: 900px;
+			    height: 500px;
+			    background-color: skyblue;
+			    margin: 400px auto;
+			}
+			.back {
+			    position: fixed;
+			    width: 50px;
+			    height: 50px;
+			    background-color: pink;
+			    right: 30px;
+			    bottom: 100px;
+			    display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div></div>
+		<div class="back">返回顶部</div>
+		<div class="container">
+		<script src="js/jq.main.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			// 筛选
+			$(function() {
+			    $("ul li:first").css("color", "red");
+			    $("ul li:eq(2)").css("color", "blue");
+			    $("ol li:odd").css("color", "skyblue");
+			    $("ol li:even").css("color", "pink");
+			})
+			// 动画的方法的运用
+			// show()
+			// hide() 
+			// fadeIn()
+			// fadeOut()
+			$("div").show(1000, function() {
+			    alert(1);
+			});
+			// 下滑动 slideDown()
+			// 上滑动 slideUp()
+			// 滑动切换 slideToggle()
+			$("div").slideUp(500, function() {
+				
+			});
+			
+			
+			
+			console.log($('div').width())//获取元素的width
+			console.log($('div').innerWidth())//width+padding
+			console.log($('div').outerWidth())//width+padding+border
+			console.log($('div').outerWidth(true))//true width+padding+border+margin
+			// 位置的偏移
+			var boxTop = $(".container").offset().top;
+			$(window).scroll(function(){
+				console.log($(document).scrollTop())
+				if($(document).scrollTop() >= boxTop){
+					console.log("滚动到指定位置了")
+				}else{
+					console.log("离开了指定位置")
+				}
+			})
+			// 返回到头部
+			$('.back').click(function(){
+				$('body, html').stop().animate({
+					scrollTop: 0
+				})
+			})
+			
+			
+			// 创建元素或添加
+			var li = $("<li>我是新创建出来的元素</li>")
+			// 在内部添加
+			$("ul").append(li)//在后面添加
+			$("ul").prepend(li)//在前面添加
+			// 在外部添加
+			var div = $("<div>我是后妈生的</div>");
+			// $(".test").after(div);
+			$(".test").before(div);
+			// 删除元素
+			$("ul").remove()//包括自身也一起删除
+			$("ul").empty()//删除子节点
+			$("ul").html("")
+			
+			// 事件的处理 ,俩个事件的一起
+			$("div").on("mouseenter mouseleave", function() {
+			    $(this).toggleClass("current");
+			});
+		</script>
+	</body>
+</html>

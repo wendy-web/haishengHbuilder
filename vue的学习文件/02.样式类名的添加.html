@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>vue的引入</title>
+		<style type="text/css">
+			.active {
+			  border: 1px solid red;
+			  width: 100px;
+			  height: 100px;
+			}
+			.error {
+			  background-color: orange;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<!-- 对象的类名添加，后面接布尔类型来判断添不添加 -->
+			<div v-bind:class="{active:isActive, error: isError}">
+			  测试样式
+			</div>
+			<button v-on:click='handle'>切换</button>
+			
+			<!-- 数组的形式添加类 -->
+			<div v-bind:class='[activeClass, errorClass]'>测试样式</div>
+			<button v-on:click='clearClass'>清除类</button>
+			
+			<!-- 俩者也可以一起用 -->
+			<div v-bind:class='[activeClass, errorClass,{active:isActive}]'>测试样式</div>
+			<!-- input_sel原本的类名，通过判断checked的布尔值来判断添加哪个类名 -->
+			<div 
+				:class="[
+			        'input_sel',
+			         checked ? 'sele_active' : ''
+			    ]"
+			>
+		</div>
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var vue = new  Vue({
+				el:'#app',
+				data: {
+					isActive: true,
+					isError:  true,
+					activeClass: 'active',
+					errorClass: 'error'
+				},
+				// 定义一些事件的方法
+				methods:{
+					handle(){
+						this.isActive = !this.isActive
+						this.isError = !this.isError
+					},
+					clearClass(){
+						this.activeClass = '';
+						this.errorClass = '';
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

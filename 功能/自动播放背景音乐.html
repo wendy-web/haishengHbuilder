@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>背景音乐</title>
+		<style>
+			/* 背景音乐 */
+			.audio_box{
+			    position: absolute;
+				right: 0rem;
+				top: 0rem;
+				width: 1.5rem;
+				height: 1.5rem;
+				overflow: hidden;
+				z-index: 2;
+				text-align: center;
+				color: #c8ceca;
+				background: gray;
+			}
+			.audio_box i{
+				font-size: 1rem;
+			}
+			#zhengzai_qianggou{
+			    position: fixed;
+			    left: 0;
+			    top: 0;
+			    background-color: rgba(0, 0, 0, 0.7);
+			    width: 100%;
+			    height: 100%;
+			    z-index: 3;
+			    display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="audio_box">
+		    <i class="audio_swi iconfont icon-yinyueclick"></i>
+		    <audio id="background_audio" src="__STATIC__/index/audio/background.mp3" preload="preload"></audio>
+		</div>
+		
+<script type="text/javascript">
+$(document).ready(function(){
+	function autoPlay(id){
+		var audio = document.getElementById(id); 
+		audio.play(); 
+		document.addEventListener("WeixinJSBridgeReady", function () { 
+			audio.play(); 
+		}, false); 
+		document.addEventListener('YixinJSBridgeReady', function() { 
+			audio.play(); 
+		}, false);
+	} 
+	// 调用自动播放方法,传入id
+	autoPlay('background_audio');
+	
+	
+	$(".audio_swi").click(function(){
+		var video = document.getElementById("background_audio");
+		if (video.paused) {
+			video.play();
+		} else{
+			video.pause();
+		}
+	})
+});
+</script>
+	</body>
+</html>

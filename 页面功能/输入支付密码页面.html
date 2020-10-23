@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>输入支付密码的页面</title>
+		<script src="../js/jQuery.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			/* 输入密码的弹出 */
+			.psw_tc{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.48);
+				z-index: 99999999;
+				/* display: none; */
+			}
+			.numb_box{
+				position: absolute;
+				bottom: 0;
+				background: #fff;
+				width: 100%;
+				animation: numbBox .3s;
+			}
+			@keyframes numbBox{
+				from{bottom: -220px;}
+				to{bottom: 0;}
+			}
+			.nub_ggg{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+			.nub_ggg li{
+				width: 33.3%;
+				height: 55px;
+				text-align: center;
+				line-height: 55px;
+				font-size: 20px;
+				color: #0de3f1;
+			}
+			.nub_ggg li i{font-size: 25px;}
+			.inputPsw{
+				position: absolute;
+				top: 20%;
+				left: 10%;
+				width: 80%;
+				background: #fff;
+				border-radius: 10px;
+				padding: 20px 10px;
+				text-align: center;
+				animation: inputPsw .3s;
+			}
+			@keyframes inputPsw{
+				from{opacity: 0;}
+				to{opacity: 1;}
+			}
+			.inputNum ul{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 15px 0;
+			}
+			.inputNum ul li{
+				position: relative;
+				width: 16.6%;
+				height: 40px;
+				border-right: 1px solid #ccc;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.inputNum ul li i{
+				width: 10px;
+				height: 10px;
+				display: block;
+				border-radius: 50%;
+				background: #4a4848;
+				display: none;
+			}
+			.inputNum ul li div{
+				width: 2px;
+				height: 20px;
+				display: block;
+				background: #717070;
+				animation: opac 2s infinite;
+				display: none;
+			}
+			.inputNum ul li:first-child div{
+				display: block;
+			}
+			@keyframes opac
+			{
+				from {opacity:0;}
+				to {opacity:1;}
+			}
+			.inputNum p{
+				color: #9FA0A0;
+				font-size: 14px;
+			}
+			.inputNum ul li:last-child{
+				border: none;
+			}
+			.inputBtn{
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				margin-top: 30px;
+			}
+			.inputBtn input{
+				border: none;
+				color: #fff;
+				background: #0de3f1;
+				line-height: 1.7rem;
+				width: 35%;
+				border-radius: 10px;
+			}
+			.inputBtn input:first-child{
+				background: #9FA0A0;
+			}
+			.nub_ggg .active{
+				background: #efefef;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 输入密码的弹出 -->
+		<div class="psw_tc">
+			
+			<div class="inputPsw">
+				<div class="inputNum">
+					<ul>
+						<li><i></i><div></div></li>
+						<li><i></i><div></div></li>
+						<li><i></i><div></div></li>
+						<li><i></i><div></div></li>
+						<li><i></i><div></div></li>
+						<li><i></i><div></div></li>
+					</ul>
+					<p>密码为6位小数</p>
+				</div>
+				<div class="inputBtn">
+					<input type="button" value="取消" class="cancelPsw"/>
+					<input type="button" value="确定" class="ensurePsw"/>
+				</div>
+			</div>
+			<div class="numb_box">
+			    <ul class="nub_ggg">
+			        <li class="zf_num">1</li>
+			        <li class="zf_num">2</li>
+			        <li class="zf_num">3</li>
+			        <li class="zf_num">4</li>
+			        <li class="zf_num">5</li>
+			        <li class="zf_num">6</li>
+			        <li class="zf_num">7</li>
+			        <li class="zf_num">8</li>
+			        <li class="zf_num">9</li>
+			        <li class="zf_empty">清空</li>
+			        <li class="zf_num">0</li>
+			        <li class="zf_del">
+					<i class="iconfont">&#xe61f;</i>	
+					</li>
+			    </ul>
+			</div>
+		</div>
+		<script>
+			// 输入密码的弹出框
+			var pswlist = []
+			$(".nub_ggg li").click(function(){
+				$(this).addClass("active")
+				setTimeout(function(){
+					$(this).removeClass("active")
+				}.bind(this), 300)
+			})
+			// 点击密码
+			$(".zf_num").click(function(){
+				// 	console.log("只能输入6个")
+				if(pswlist.length < 6){
+					pswlist.push($(this).text())
+				}else{
+					alert("只能输入6个")
+				}
+				console.log(pswlist)
+				pswNum()
+			})
+			// 循环显示样式
+			function pswNum(){
+				$(".inputNum li").each(function(index, ele){
+					if(index < pswlist.length){
+						$(this).find("i").show()
+					} else{
+						$(this).find("i").hide()
+					}
+					$('.inputNum li').eq(pswlist.length).find("div").show()
+					$('.inputNum li').eq(pswlist.length).siblings().find("div").hide()
+					if(pswlist.length == 6){
+						$('.inputNum li').find("div").hide()
+					}
+				})
+			}
+			// 删除
+			$('.zf_del').click(function(){
+				pswlist.pop()
+				console.log(pswlist)
+				pswNum()
+			})
+			// 清空密码
+			$(".zf_empty").click(function(){
+				pswlist = [];
+				pswNum()
+			})
+			// 取消
+			$('.cancelPsw').click(pswdisplay)
+			
+			// 隐藏或打开
+			function pswdisplay() {
+				$('.psw_tc').toggle()
+				pswlist = []
+				pswNum()
+			}
+		</script>
+	</body>
+</html>

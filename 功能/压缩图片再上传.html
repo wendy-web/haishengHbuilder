@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>压缩图片上传功能</title>
+		<script src="../js/myfun.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<li data-type="1">
+			<div class="upload-img upload-bg1">
+				<img class="img_fled" src="{$member['idimg1']}"/>
+				<img src="/addons/sz_yi/template/mobile/style1/static/images/infor/idicon_1.png" class="id_icon"/>
+			</div>
+			<input id="fled" name="fled" type="file"/>
+		</li>
+		
+		
+<script>
+	function imgd(id){
+		// 显示加载动画
+		$(".load_Tc").show()
+		// console.log($('#' + id))
+		if (typeof FileReader == 'undifined') {//判断浏览器是否支持filereader
+			result.innerHTML = "<p>抱歉，你的浏览器不支持 FileReader</p>";
+			return false;
+		}
+		// 传进来的是id 通过拼接的形式来获取
+		var file = $('#' +id)[0].files[0];
+		console.log(file)
+		if (!/image\/\w+/.test(file.type)) {//判断获取的是否为图片文件
+			alert("请确保文件为图像文件");
+			return false;
+		}
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function (e) {
+			imgURL = this.result;
+			// console.log(imgURL);
+			//压缩图片  也可通过src进行压缩
+			myfun.compressImg({
+				file: file,
+				fileName: id,
+				quality: 0.5//压缩比例
+			}, function (res) {
+				console.log(res)
+				imgURL = res.base64;//压缩后的图片地址,是base64位的
+				setTimeout(function(){
+					$.ajax({
+						url:"{php echo $this->createMobileUrl('util/uploader1')}", //请求的url地址
+						dataType:"json", //返回格式为json
+						async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+						data:{'file':imgURL}, //参数值
+						type:"POST", //请求方式 文件上传只能用post
+						success:function(res){
+							if(res.code==0){//上传成功
+								$('.img_'+id).attr("src", res.url);
+								$(".load_Tc").hide();
+							}else{//上传失败
+								alert(res.msg);//失败信息
+							}
+						}
+					});
+				}, 2000)
+			})
+		}
+	}
+	// 上传图片
+	$("#fled").change(function(){
+		imgd($(this).attr("id"))
+	});
+</script>
+	</body>
+</html>

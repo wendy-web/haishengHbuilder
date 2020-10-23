@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<!-- 添加class的类名 -->
+		<div 
+		  :class="[
+			'input_sel',
+			checked ? 'sele_active' : ''
+		  ]"
+		  @click="checked = !checked"
+		>
+		  <!-- <input type="checkbox"> -->
+		</div>
+<script>
+	// 接口实例
+	this.$http.post(this.$api.Special, {}, 0).then(res => {
+		console.log(res);
+		if(res.status==1){
+		  that.nowmoney = res.result.credit2
+		  that.list = res.result.member
+		  this.mony_x = this.list[0].total
+		  this.level = this.list[0].level
+		  this.now_level = res.result.name
+		  this.jiedan = res.result.jiedan
+		}
+	  });
+	  // 带参数传值的实例
+	   news_detail() {
+		this.$router.push({
+			path: '/newsetting',
+			query: {
+			  id: this.messId
+			}
+		})
+	  }
+</script>
+	</body>
+</html>

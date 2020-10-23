@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>模板引擎的使用(script中使用html)</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<style>
+			.container {
+				padding-top: 150px;
+			}
+			.list-group {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="请输入搜索关键字" id="search">
+				<ul class="list-group" id="list-box">
+				</ul>
+			</div>
+		</div>
+		<script src="js/ajax.js"></script>
+		<script src="js/template-web.js"></script>
+		<script type="text/text/html" id="tpl">
+			
+		</script>
+		<script type="text/javascript">
+			var searInput = document.getElementById('search')
+			var lisBox = document.getElementById('list-box')
+			var timer = null;
+			// input的输入事件
+			searInput.oninput = function(){
+				
+				console.log(22)
+				clearTimeout(timer)
+				var key = this.value
+				if(key.trim().length == 0){
+					lisBox.style.display = "none"
+					return;
+				}
+				timer = setTimeout(function(){
+					ajax({
+						type: 'get',
+						url: 'http://localhost:3000/searchAutoPrompt',
+						data: {
+							key:key
+						},
+						success:function(result){
+							// 使用模板引擎拼接字符串
+							var html = template('tpl', {result: result});
+							// 将拼接好的字符串显示在页面中
+							listBox.innerHTML = html;
+							// 显示ul容器
+							listBox.style.display = 'block';
+						}
+					})
+				}, 800)
+				
+			}
+		</script>
+	</body>
+</html>

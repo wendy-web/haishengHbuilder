@@ -1,0 +1,61 @@
+{extend name="layout" /}
+{block name="style"}
+<meta charset="utf-8">
+<style>
+    body{background-color:#f6f6f6;}
+    /*头部*/
+    .Rucian_Top{position: relative;height: 2.25rem;border-bottom: 1px solid #efefef !important;}
+    .Rucian_Top a img{position: absolute;width: 1rem;left: .5rem;top: 0.625rem;}
+    /*切换*/
+    /*切换*/
+    .Rucian_Qieh{border-bottom: 1px solid rgb(238, 238, 238);}
+    .Rucian_Qieh .Rucian_Tab{width: 25%;text-align: center;height: 2rem;line-height: 2rem;}
+    .Rucian_Qieh .Rucian_Tabred{background-color: rgba(255, 0, 0, 0.53);color: rgb(255, 255, 255);}
+	/*内容*/
+	.Rucian_nr .Rucian_Lb{padding: .75rem;border-bottom: 1px solid rgb(217, 217, 217);font-size: .65rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_One{color: rgb(101, 176, 156);font-size: .7rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_One img{width: 1rem;height: 1rem;margin-right: .5rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_orange{color: rgb(214, 104, 91);}
+	.Rucian_nr .Rucian_Lb .Rucian_Tow{margin-top: .5rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_San{margin-top: .5rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_San .Rucian_Xz{padding: .3rem .5rem;background: rgb(101, 176, 156);color: rgb(255, 255, 255);border-radius: .2rem;}
+	.Rucian_nr .Rucian_Lb .Rucian_San .Rucian_Dh{padding: .25rem .5rem;background: rgb(255, 255, 255);border: 1px solid rgb(70, 70, 70);border-radius: .2rem;}
+</style>
+{/block}
+{block name="js"}
+    <script src="__STATIC__/index/js/template.js"></script>
+{/block}
+{block name="content"}
+    <div class="Rucian_Top flex flex-center">
+        <a href="javascript:history.back(-1)">
+            <img src="__STATIC__/index/images/Rucian_left.png" alt="">
+        </a>买入记录
+    </div>
+    <!-- 切换 -->
+    <div class="Rucian_Qieh flex flex-ver">
+        <div class="Rucian_Tab Rucian_Tabred" data-type="1">买入中</div>
+        <div class="Rucian_Tab" data-type="2">待打款</div>
+        <div class="Rucian_Tab" data-type="3">待确定 </div>
+		<div class="Rucian_Tab" data-type="4">已完成</div>
+    </div>
+    <!-- 内容 -->
+    <div class="Rucian_nr" id="container">
+		<div class="Rucian_Lb">
+			<a href="#">
+				<p>订单号：<span class="Rucian_orange">1222655555555</span></p>
+				<p>时间：<span class="Rucian_orange">2020-11-11</span></p>
+				<p>数量：<span class="Rucian_orange">155</span></p>
+				<p>价格:<span class="Rucian_orange">12226555</span></p>
+			</a>
+		</div>
+	</div>
+       
+{/block}
+{block name="footer"}{/block}
+{block name="script"}
+<script>
+	$('.Rucian_Tab').click(function(){
+		$(this).addClass('Rucian_Tabred').siblings().removeClass('Rucian_Tabred')
+	})
+</script>
+{/block}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>异步promise的编程</title>
+</head>
+<body>
+  <div id="app">前后端的交互</div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+	/*
+		promise的基本使用
+		是一个方法也是一个对象
+	*/
+   // var p = new Promise(function(resolve, reject){
+   //   // 这里用于实现异步任务
+   //   setTimeout(function(){
+   //     var flag = false;
+   //     if(flag) {
+   //       // 正常情况
+   //       resolve('hello');
+   //     }else{
+   //       // 异常情况
+   //       reject('出错了');
+   //     }
+   //   }, 100);
+   // });
+   
+   // p.then(function(data){
+   // 	console.log(data)	//hello
+   // }, function(info){
+   // 	console.log(info)	//出错了
+   // })
+   
+	function queryData(url) {
+		var p = new Promise(function(resolve, reject){
+			var xhr = new XMLHttpRequest()
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState != 4) return;
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					// 处于正常的情况下
+					resolve(xhr.responseText)
+				} else{
+					// 处于异常的情况
+					reject('服务器错误')
+				}
+			}
+			xhr.open('get', url)
+			xhr.send()
+		})
+		return p
+	}
+	// 发送多个请求,并保证顺序
+	queryData('http://localhost:3000/data')
+		.then(function(data){
+			console.log(data)
+			return queryData('http://localhost:3000/data1')
+		})
+		.then(function(data){
+			console.log(data)
+			return queryData('http:localhost:3000/data2')
+		})
+		.then(function(data){
+			console.log(data)
+		})
+	
+	// promise常用的api
+	function foo() {
+	  return new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      // resolve(123);
+	      reject('error');
+	    }, 100);
+	  })
+	}
+	
+	// foo()
+	// 正常情况
+	//   .then(function(data){
+	//     console.log(data)
+	//   })
+	// 异常情况
+	//   .catch(function(data){
+	//     console.log(data)
+	//   })
+	// 完成情况
+	//   .finally(function(){
+	//     console.log('finished')
+	//   });
+	
+	// --------------------------
+	// 两种写法是等效的
+	foo()
+	  .then(function(data){
+	    console.log(data)
+	  },function(data){
+	    console.log(data)
+	  })
+	  .finally(function(){
+	    console.log('finished')
+	  });
+  </script>
+</body>
+</html>

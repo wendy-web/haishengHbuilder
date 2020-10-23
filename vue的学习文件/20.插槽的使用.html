@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+	  <!-- 组件插槽的使用，当不传入值时，就使用原本的内容 -->
+	<alert-box></alert-box>
+    <alert-box>有一个警告</alert-box>
+	
+	<base-layout>
+		<p slot="header">标题信息</p>
+		<p>主要内容1</p>
+		<p>主要内容2</p>
+		<p slot='footer'>底部信息信息</p>
+	</base-layout>
+	<hr >
+	<!-- template是模版，添加插槽的名称，可以添加多个内容 -->
+	<base-layout>
+	  <template slot='header'>
+	    <p>标题信息1</p>
+	    <p>标题信息2</p>
+	  </template>
+	  <p>主要内容1</p>
+	  <p>主要内容2</p>
+	  <template slot='footer'>
+	    <p>底部信息信息1</p>
+	    <p>底部信息信息2</p>
+	  </template>
+	</base-layout>
+	<hr >
+	<!-- tab选项的插槽 -->
+	<fruit-list :list="list">
+		<template slot-scope='slotProp'>
+			<strong v-if='slotProp.info.id == 3'>{{slotProp.info.name}}</strong>
+			<span v-else>{{slotProp.info.name}}</span>
+		</template>
+	</fruit-list>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+   /*
+	组件插槽：父组件像子组件传递内容
+   */
+	Vue.component('alert-box', {
+	  template: `
+		  <div>
+			<strong>ERROR:</strong>
+			<slot>默认内容</slot>
+		  </div>
+	  `,
+	});
+	// 具名插槽
+	Vue.component('base-layout', {
+	  template: `
+	    <div>
+	      <header>
+	        <slot name='header'></slot>
+	      </header>
+	      <main>
+	        <slot></slot>
+	      </main>
+	      <footer>
+	        <slot name='footer'></slot>
+	      </footer>
+	    </div>
+	  `
+	});
+	// 作用域插槽
+	Vue.component('fruit-list', {
+		props:['list'],
+		template: `
+			<div>
+				<li v-for="item in list" v-key="item.id">
+					<slot :info="item">{{item.name}}</slot>
+				</li>
+			</div>
+		`
+	})
+	
+    var vm = new Vue({
+      el: '#app',
+      data: {
+		  list: [{
+		    id: 1,
+		    name: 'apple'
+		  },{
+		    id: 2,
+		    name: 'orange'
+		  },{
+		    id: 3,
+		    name: 'banana'
+		  }]
+      }
+    });
+  </script>
+</body>
+</html>

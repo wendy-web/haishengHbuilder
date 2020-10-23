@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>半屏的签名</title>
+		<script src="js/jQuery.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			/* 签名 */
+			.signture {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				padding: 0px 10px;
+				/* box-shadow: 0px 0px 2px 0px darkgray; */
+				background: #F2F2F2;
+				z-index: 999;
+			}
+			.signture .assign-sign {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.btn-selsect input {
+				border: 1px solid #ddd;
+				background: white;
+				padding: 5px;
+			}
+			
+			.assign-img {
+				width: 100%;
+				height: 150px;
+				overflow: hidden;
+				border: 1px solid #ddd;
+				background: white;
+				background: url(/addons/sz_yi/template/mobile/style1/static/images/sign.png) no-repeat;
+				background-size: 100% 100%;
+				position: relative;
+			}
+			.assign-img img {
+				width: 100%;
+				height: 100%;
+			}
+			.assign-img canvas{
+				position: absolute;
+				z-index: 99;
+				top: 0;
+				left: 0; 
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="signture">
+			<div class="assign-sign">
+				<p style="color: red;">签名后点击保存签名再提交</p>
+				<div class="btn-selsect">
+					<input value="清除" type="button" id="clear_sign" />
+					<input value="保存签名" type="button" data-issign="0" id="save_sign" />
+				</div>
+			</div>
+			<div class="assign-img" id="canvas">
+				<img src="{$info['contract_sign']}" class="img_url" data-imgurl="" id="ceshi"/>
+				<canvas id="test"></canvas>
+			</div>
+			<div class="next-btn submit_ok">
+				<input type="button" value="确认提交" />
+			</div>
+		</div>
+		<script>
+			// 是否保存签名
+			var svae_if = false
+			
+			var move_lis = false; //鼠标是否进行移动
+			var start_x,start_y; //鼠标进入签名区的位置
+			// 签名画布距离左边和头部的偏移量
+			var	offset_le = $("#test").offset().left
+			var	offset_top = $("#test").offset().top
+			//获取画布,并设置
+			var c = document.getElementById("test");
+			var ctx=c.getContext("2d");
+			// 手指点击开始
+			$('#test').on('touchstart', function (e) {
+				// 取消外部的滚动条
+				$(".sign-wrapper").css("overflow","hidden")
+				move_lis = true;//开启鼠标移动
+				start_x = e.originalEvent.targetTouches[0].pageX - offset_le;
+				start_y = e.originalEvent.targetTouches[0].pageY - offset_top;
+				// 画布的开始绘制
+				ctx.beginPath()
+				ctx.moveTo(start_x, start_y)
+				
+			});
+			
+			// 手指点击后的移动
+			$('#test').on('touchmove', function (e) {
+				if(move_lis){
+					// 手指运动的位置
+					move_x = e.originalEvent.targetTouches[0].pageX - offset_le;
+					move_y = e.originalEvent.targetTouches[0].pageY - offset_top;
+					// 手指绘制的位移长度
+					line_x = move_x - start_x
+					line_y = move_y - start_y
+					// 绘制大于0,代表有绘制,可以进行签名的保存
+					if(line_x > 0 || line_y >0) {
+						svae_if = true
+					}
+					// 画布的绘制
+					ctx.save()
+					ctx.strokeStyle = 'black'
+					ctx.lineWidth = 3
+					ctx.lineTo(move_x, move_y);
+					ctx.stroke()
+					ctx.restore()
+				}
+			});
+			
+			// 手指离开画布
+			$('#test').on('touchend', function (e) {
+				// 打开滚动条
+				$(".sign-wrapper").css("overflow","scroll")
+				move_lis = false
+			});
+			
+			// 清除画布
+			$("#clear_sign").click(function(){
+				ctx.clearRect(0, 0, c.width, c.height);
+				svae_if = false
+			})
+			
+			// 保存签名和提交
+			require(['tpl', 'core'], function(tpl, core) {
+				// 保存签名
+				$("#save_sign").click(function() {
+					var issign = $('#save_sign').attr('data-issign');
+					if(issign==0){
+						if(svae_if){
+							// 画布的图片格式
+							var imgBase64 = c.toDataURL();
+							var imgPng = c.toDataURL('image/png');
+							var imgJpg = c.toDataURL('image/jpeg', 0.8);
+							// console.log(imgPng);
+							var sign = imgPng;
+							// 保存图片后移除画布的触碰事件
+							$('#test').unbind("touchstart");
+							$.ajax({
+								url: "", //请求的url地址
+								dataType: "json", //返回格式为json
+								data: {
+									'op': 'upload_img',
+									img_64code: sign
+								}, //参数值
+								type: "POST", //请求方式
+								success: function(res) {
+									if (res.status == '1') {
+										// 将画布的图片赋值给这个img标签上并展示
+										$('.img_url').attr('data-imgurl', res.result);
+										$('#save_sign').attr('data-issign','1');
+									} else {
+										core.tip.show(res.result);
+										return;
+									}
+								},
+							})
+						}else {
+							core.tip.show('请签名确定无误！');
+						}
+					}
+				})
+				// 提交按钮
+				$(".submit_ok").click(function() {
+					// 判断按钮此img有无画布绘制的照片
+					var img_url = $('.img_url').attr('data-imgurl');
+					if (img_url == "") {
+						core.tip.show('请签名确定无误并保存！');
+						return;
+					}
+					var orderid = "{$_GPC['orderid']}";
+					$.ajax({
+						url: "", //请求的url地址
+						dataType: "json", //返回格式为json
+						data: {
+							'op': 'issign',
+							orderid,
+							sign_url: img_url
+						}, //参数值
+						type: "POST", //请求方式
+						success: function(res) {
+							if (res.status == 1) {
+								alert(res.result);
+								$("#alert_sign").show()
+							} else {
+								core.tip.show(res.result);
+								return;
+							}
+						},
+					})
+				})
+			})
+		</script>
+	</body>
+</html>

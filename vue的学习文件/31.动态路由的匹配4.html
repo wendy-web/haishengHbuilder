@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>vue-router</title>
+  <script src="js/vue_2.5.22.js"></script>
+  <script src="js/vue-router_3.0.2.js"></script>
+</head>
+<body>
+  <div id="app">
+	<router-link to="/user/1">User</router-link>
+	<router-link to="/user/2">User</router-link>
+	<router-link to="/user/3">User</router-link>
+	<router-link to="/user/4">User</router-link>
+	<router-link to="/register">register</router-link>
+	
+	<!-- 路由占位符 -->
+	<router-view></router-view>
+  </div>
+  <script type="text/javascript">
+	const user = {
+		props: ['uname', 'id', 'age']
+		template: '<h1>user 组件 -- 用户名id:{{id}} -- 姓名为：{{uname}} -- 年龄为: {{age}}</h1>'
+	}
+	const register = {
+		template: '<h1>Register 组件</h1>'
+	}
+	
+	// 创建路由的实例对象
+	const router = new VueRouter({
+		// 所有的路由规则
+		routes:[
+			// 路由的重定向,默认进入就是这个user的路由定位
+			{ path: '/', redirect: '/user' },
+			{ 
+				path: '/user/:id',
+				component: user,
+				props: route =>　({
+				uname: 'lisa', age: 20, id: route.params.id })
+			},
+			{ path: '/register', component: register }
+		]
+	})
+	  
+	const vm = new Vue({
+		el: '#app',
+		data:{},
+		// 挂载路由的实例对象
+		router
+	})
+  </script>
+</body>
+</html>

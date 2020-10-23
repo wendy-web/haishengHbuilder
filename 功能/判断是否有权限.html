@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			$(".shareCord").click(function(){
+				// 判断是否有权限存储的权限
+				api.requestPermission({
+					list: ['storage-w', 'storage-r'],
+					code: 1
+				}, function(ret, err) {
+					var granted = true;
+					if (ret) {
+						// 得到的ret是一个对象,里面有个list数组用于存储.granded的布尔值,如果为true的话代表有权限
+						var list = [];
+						list = ret.list;
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								// 只要有一个为false,就代表没有权限
+								if (!list[i].granted) {
+									granted = false;
+									break;
+								}
+							}
+						}
+					}
+					// granded为false的时候代表没有权限,提示让用户选择允许权限的
+					if (!granted) {
+						api.toast({
+							msg: '存储权限未授予,无法操作!',
+							duration: 2000,
+							location: 'bottom'
+						});
+					}else{
+						// 执行合成照片的img的图片
+						hecheng();
+					}
+				});
+			})
+		</script>
+	</body>
+</html>

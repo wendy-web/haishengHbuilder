@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+  
+  form div {
+    height: 40px;
+    line-height: 40px;
+  }
+  form div:nth-child(4) {
+    height: auto;
+  }
+  form div span:first-child {
+    display: inline-block;
+    width: 100px;
+  }
+  </style>
+</head>
+<body>
+  <div id="app">
+	  <input  type="text" v-model.number="age"/>
+	  <input  type="text" v-model.trim="info"/>
+	  <!-- 失去焦点的时候才同步msg的值 -->
+	  <input  type="text" v-model.lazy="msg"/>
+	  <div>{{msg}}</div>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+    /*
+      表单基本操作
+    */
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        age: '',
+		info: '',
+		msg: ''
+      },
+      methods: {
+        handle: function(){
+
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>密码存入cookie</title>
+		<script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.base64.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		
+		<label>用户名：</label><input type="text" id="mobile" placeholder="请输入用户名/手机号">
+		<label>密码：</label><input type="password" id="password" placeholder="请输入6-16位数密码">
+		<label>记住密码</label>
+		<script>
+			// 外番 该方法不会对ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( ) 
+			// encodeURIComponent(uri) //进行编码
+			// decodeURIComponent()	   //进行解码
+			
+			// 记住密码
+			var remCheck = true;
+			//初始化页面时验证是否记住了密码
+			if(!$.cookie("userName")){ //判断刚进入cookie时是否存在userName
+				$("#mobile").val("");
+			} else{
+				//$.base64.decode()对取得cookie的数据进行解码
+				$("#mobile").val($.base64.decode($.cookie("userName")));
+			}
+			if(!$.cookie("passWord")){
+				$("#mobile").val("");
+			} else{
+				$("#password").val($.base64.decode($.cookie("passWord")));
+			}
+			function saveUserInfo() {
+			    if (remCheck) {// 记住密码
+					// $.base64.encode() 进行数据的编码(防止密码的暴露)
+			       var userName = $.base64.encode($("#mobile").val());
+			       var passWord = $.base64.encode($("#password").val());
+			       $.cookie("userName", userName, { expires: 7 }); // 存储一个带7天期限的 cookie
+			       $.cookie("passWord", passWord, { expires: 7 }); // 存储一个带7天期限的 cookie
+			    }
+			    else {
+			       $.cookie("userName", '', { expires: -1 });
+			       $.cookie("passWord", '', { expires: -1 });
+			    }
+			}
+		</script>
+	</body>
+</html>

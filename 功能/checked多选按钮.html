@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>checked多选</title>
+	</head>
+	<body>
+		<input type="checkbox" data-type = "0" id="allcheck"/><label for="allcheck">全选</label>
+		<ul>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid1</label></li>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid2</label></li>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid3</label></li>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid4</label></li>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid5</label></li>
+			<li><input type="checkbox" name="checklist" class="checkone" data-onetype = "0"/><label>valueid6</label></li>
+		</ul>
+		<script>
+			var type;
+			$('#allcheck').change(function(){
+				type = $(this).data("type")
+				if(type == 0){
+					// 勾选所有的多选按钮
+					$('.table .checkone').each(function(){
+						$(this).prop("checked", "checked")
+						$(this).data('onetype', 1);
+					})
+					$('#checkAll').addClass("active")
+					$('#checkAll').removeProp('disabled')
+					$(this).prop("checked", "checked")
+					$(this).data('type', 1);
+				}else{
+					$('.table .checkone').each(function(){
+						$(this).removeProp("checked")
+						$(this).data('onetype', 0);
+					})
+					$('#checkAll').removeClass("active")
+					$('#checkAll').prop('disabled')
+					$(this).data('type', 0);
+				}
+			})
+		</script>
+	</body>
+</html>

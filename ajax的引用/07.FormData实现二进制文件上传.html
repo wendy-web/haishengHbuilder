@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>FormData</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<style type="text/css">
+			.container {
+				padding-top: 60px;
+			}
+			.padding {
+				padding: 5px 0 20px 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="form-group">
+				<label>请选择文件</label>
+				<input type="file" id="file">
+				<div class="padding" id="box">
+					<!--<img src="" class="img-rounded img-responsive">-->
+				</div>
+				<div class="progress">
+					<div class="progress-bar" style="width: 0%;" id="bar">0%</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" id="provinceTpl">
+			// 获取文件选择控件
+			var file = document.getElementById('file');
+			// 获取进度条元素
+			var bar = document.getElementById('bar');
+			// 获取图片容器
+			var box = document.getElementById('box');
+			
+			
+			
+			// 选择文件是触发
+			file.onchange = function() {
+				// 创建空的formData表单对象,将用户选择的文件追加到formData的表单对象中
+				var formData = new FormData()
+				formData.append('attrName', this.files[0])
+				var xhr = new XMLHttpRequest()
+				xhr.open('post', 'http://localhost:3000/upload');
+				
+				// 在文件上传中持续触发
+				xhr.upload.onprogress = function(ev) {
+					// ev.loaded是文件已经上传了多少 ev.total是文件的总大小
+					var result = (ev.loaded / ev.total) * 100 + '%'
+					// 设置文件的进度条的宽度和百分比
+					bar.style.width = result
+					bar.innerHTML = result
+				}
+				xhr.send(formData)
+				xhr.onload = function() {
+					if(xhr.status == 200) {
+						// 将文件返回的数据以对象的形式返回到控制台中
+						var result = JSON.parse(xhr.responseText)
+						// 创进img的标签,并把后端返回过来的img属性添加到这里
+						var img = document.createElement('img')
+						img.src = result.path
+						// 待图片加载完以后,将图片显示在页面中
+						img.onload = function() {
+							box.appendChild(img)
+						}
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

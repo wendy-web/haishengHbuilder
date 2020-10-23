@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript">
+			this.setCookie('openid',"2464")
+			// 拿到存入cookie的值
+			 getCookie3(name){
+			    //可以搜索RegExp和match进行学习
+			    var arr,reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+			    if (arr = document.cookie.match(reg)) {
+			        return unescape(arr[2]);
+			    } else {
+			        return null;
+			    }
+			  },
+			  // 设置存入cookie的值
+			  setCookie(c_name,value,expire) {
+				  var date=new Date()
+				  date.setSeconds(date.getSeconds()+expire)
+				  document.cookie=c_name+ "="+escape(value)+"; expires="+date.toGMTString()
+			  }
+			
+			
+			
+		</script>
+	</body>
+</html>

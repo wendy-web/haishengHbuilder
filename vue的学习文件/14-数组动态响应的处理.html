@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <input type="text" name="" v-model="nameValue" />
+	<ul>
+	  <li v-for='item in list'>{{item}}</li>
+	</ul>
+	<div>
+		<div>{{info.name}}</div>
+		<div>{{info.age}}</div>
+	</div>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+	  
+    var vm = new Vue({
+      el: '#app',
+      data: {
+		list: ['apple','orange','banana', 'lemon'],
+		info: {
+			name: 'list',
+			age: 12
+		}
+      },
+	  
+    });
+	// 通过索引修改的数组是不具备响应式的功能
+	// vm.list[1] = 'lemon'
+	
+	// $set(数组, 索引, 更改的值) 与vm.set()是相同的
+	vm.$set(vm.list, 2 ,'lemon')
+	vm.set()
+	
+	
+	// 这样添加的对象属性是不具备响应醒的性质
+	// vm.info.gender = 'male'
+	vm.$set(vm.info, 'genter', 'female')
+  </script>
+</body>
+</html>

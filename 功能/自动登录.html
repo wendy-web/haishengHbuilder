@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			//1.个人中心保存cookie
+			<script language="javascript">
+			function saveCookies(){
+				var name = "__cookie_sz_yi_userid_";
+				var cookies = document.cookie;
+				if(null!=cookies){
+					var cookiesArr = cookies.split(";");
+					for (i = 0; i < cookiesArr.length; i++) { 
+					  var cookie = cookiesArr[i];
+					  if(cookie.indexOf(name) != -1){
+						  var key = cookie.split("=")[0];
+						  var value = cookie.split("=")[1];
+						   window.localStorage.setItem("key",key);
+						   window.localStorage.setItem("value",value);
+					  }
+				   }
+			
+				}
+			}
+			</script>
+			//2.登录页面设置cookie
+			<script language="javascript">
+			    function setCookie(name,value){
+			      var Days = 30;
+			      var exp = new Date();
+			      exp.setTime(exp.getTime() + Days*24*60*60*1000);
+			      //document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+			      document.cookie = name + "=" + value + ";expires=" + exp.toGMTString();
+			    }
+			    var key = window.localStorage.getItem("key");
+			    var value = window.localStorage.getItem("value");
+			    if(key != null && value!=null){
+				setCookie(key,value);
+				location.href = '个人中心页面链接';
+			    }
+			</script>
+			//3.手动退出登录事件清除cookie
+			$('.login-out').click(function(event){
+			 window.localStorage.removeItem("key");
+			 location.href="{php echo $this->createMobileUrl('member/logout')}";
+			
+			});
+		</script>
+	</body>
+</html>

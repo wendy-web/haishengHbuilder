@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+		// apicloud方法下载图片
+        var date =new Date();
+        var time =date.getTime();
+        $('body').on('click', '.simg', function() {
+            time++;    
+            var url=$(this).attr('src');    
+            console.log(url);  
+            api.actionSheet({
+                title: '是否保存图片到本地？',
+                cancelTitle: '取消',
+                buttons : ['是']
+            }, function(ret, err) {
+                if (ret.buttonIndex == 1) {         
+                    api.download({    
+                    url: url,
+                    savePath: 'fs://test'+time+'.jpg',
+                    report: true,
+                    cache: true,      
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        /* api.toast({ msg : '图片下载成功'});*/
+                        api.saveMediaToAlbum({   
+                            path: 'fs://test'+time+'.jpg',
+                        }, function(ret, err) {   
+                            if (ret && ret.status) {    
+                                alert('图片已成功保存到相册');
+                            } else {
+                                alert('图片保存到相册失败');          
+                            }    
+                        });
+                    } else {
+
+                    }
+                });  
+                }
+                
+            });
+        });
+
+        //浏览器保存图片
+        function H5(){
+			// ie的保存图片
+            var img = document.createElement('a');
+            img.href = url_img;
+            // 下载的文件名字
+            img.download = `file.jpg`; 规定了jpeg,jpg格式
+            img.click();
+
+            // 二方法
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute("crossOrigin", "Anonymous");   //原生images方法的创建
+            image.onload = function() {	//点击
+                var canvas = document.createElement("canvas"); 生成canvas把图片进行画制
+                canvas.width = image.width;		//设置canva的宽
+                canvas.height = image.height;	//设置canvas的高
+                var context = canvas.getContext("2d");	//2d模式的canvas
+                context.drawImage(image, 0, 0, image.width, image.height);	//设置canvas偏差量,保证图片的清晰度
+                var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据 拿到生成的canvas图片
+
+                var a = document.createElement("a"); // 生成一个a元素
+                var event = new MouseEvent("click"); // 创建一个单击事件
+                a.download = name || "photo"; // 设置图片名称
+                a.href = url; // 将生成的URL设置为a.href属性
+                a.dispatchEvent(event); // 触发a的单击事件
+            };
+            image.src = imgsrc;
+            // 三方法
+            var date =new Date();
+            var time =date.getTime(); //获取当前时间的时间戳
+            time++;    
+            var url= this.ol_img; //拿到图片的路径(VUE 路径)
+            var url= $("#image").attr("src"); //拿到图片的路径(VUE 路径)
+            console.log(url);  
+			var pic =  'pic'+time;
+            var tagA = document.createElement('a') //创建A标签
+              tagA.download = name || pic	//设置下载的图片名字如果有直接用name,没有就使用pic作为图片名字
+              // 设置图片地址
+              tagA.href = url; //A标签的href路径,用于识别点击时不跳转,直接下载图片
+              tagA.click();//模拟点击a标签
+        }
+        // canvas保存图片
+        function canvas(){
+            $(document).on("click", ".save_btn", function () {
+                console.log("点击保存了")
+                $(".hidden_model").show();
+                // save_img();
+                var pic;
+                var w = $("#posterimg").width();
+                var h = $("#posterimg").height();
+                //要将 canvas 的宽高设置成容器宽高的 2 倍
+                var canvas = document.createElement("canvas");
+                var images = document.getElementById("fx_imgsrc")
+                canvas.width = w * 2.5;
+                canvas.height = h * 2.5;
+                canvas.style.width = w + "px";
+                canvas.style.height = h + "px";
+                var context = canvas.getContext("2d");
+                //然后将画布缩放，将图像放大两倍画到画布上
+                context.scale(2.5, 2.5);
+                html2canvas(document.querySelector('#canvas'), {
+                    taintTest: false,
+                    useCORS: true,
+                    allowTaint: false,
+                    canvas: canvas,
+                    onrendered: function (canvas) {
+                        canvas.setAttribute('style', "width:100%;height:100%;");
+                        images.src = canvas.toDataURL();
+                        // console.log(images.src)
+                        $.ajax({
+                            url: "{php echo $this->createMobileUrl('member/images')}", //发送我canvas拿到的图片 
+                            type: 'post',
+                            data: { 'images1': images.src },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.status == 0) {
+                                    alert('分享码生成失败');
+                                } else {
+                                    $(".hidden_model").hide();
+                                    // alert("成功")
+                                    var url_img = "http://"+data.result
+                                    $("#save_val").val(url_img)
+                                    console.log( $("#save_val").val())
+                                    
+                                    apiready = function (){
+                                        save_img();
+                                        return;
+                                    };
+                                    var img = document.createElement('a');
+                                    img.href = url_img;
+                                    // 下载的文件名字
+                                    img.download = `file.jpg`;
+                                    img.click();
+
+                                }
+                            }
+                        })
+                    }
+                });
+                // ----------------------------
+                
+                function save_img() {
+                    var date = new Date();
+                    var time = date.getTime();
+                    time++;
+                    var url = $('#save_val').val();
+                    console.log(url)
+                    api.actionSheet({
+                        title: '是否保存图片到本地？',
+                        cancelTitle: '取消',
+                        buttons: ['是'],
+                    }, function (ret, err) {
+                        if (ret.buttonIndex == 1) {
+                            api.download({
+                                url: url,
+                                savePath: 'fs://test' + time + '.png',
+                                report: true,
+                                cache: true,
+                                allowResume: true
+                            }, function (ret, err) {
+                                // alert(url)
+                                // alert(ret.state)
+                                if (ret.state == 1) {
+                                    // alert(222)
+                                    api.toast({ msg : '图片下载成功'});
+                                    api.saveMediaToAlbum({
+                                        path: 'fs://test' + time + '.png',
+                                    }, function (ret, err) {
+                                        if (ret && ret.status) {
+                                            alert('图片已成功保存到相册');
+                                        } else {
+                                            alert('图片保存到相册失败');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                // ----------------------
+            })
+        }
+
+    </script>
+</body>
+</html>

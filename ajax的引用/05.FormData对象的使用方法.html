@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>FormData</title>
+	</head>
+	<body>
+		<!-- 创建普通的html表单 -->
+		<form id="form">
+			<input type="text" name="username">
+			<input type="password" name="password">
+			<input type="button" id="btn" value="提交">
+		</form>
+		
+		<script type="text/javascript" id="provinceTpl">
+			var btn = document.getElementById('btn')
+			var form = document.getElementById('form')
+			btn.onclick = function(){
+				// FormData是将普通的表单以一种数据的形式传递过去,,必须添加name
+				
+				// 将普通的html表单转换为表单对象
+				var formdata = new FormData(form)
+				var xhr = new XMLHttpRequest();
+				xhr.open('post', 'http://localhost:3000/formData')
+				xhr.send(FormData)
+				.xhr.onload = function() {
+					if(xhr.status == 200) {
+						// 得到后端返回过来的数据
+						console.log(xhr.responseText)
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

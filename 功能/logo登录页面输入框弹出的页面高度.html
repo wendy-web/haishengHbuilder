@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			// 处理屏幕超出的部分
+	        var viewHeight = window.innerHeight; //获取可视区域高度
+	        $("input").focus(function(){
+	            $(".login-wrapper").css("height",viewHeight);
+	        }).blur(function(){
+	            $(".login-wrapper").css("height","100%");
+	        });
+		</script>
+	</body>
+</html>

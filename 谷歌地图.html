@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<!-- https://developers.google.com/maps/documentation/geocoding/overview#GeocodingRequests -->
+		<!-- 谷歌地图的api文档 -->
+		<!-- https://maps.googleapis.com/maps/api/geocode/json?address=%22%E5%93%A5%E6%89%93%E4%BA%AC%E9%82%A3%E5%B3%87%E9%B2%81%E5%8E%BF%22&key=AIzaSyBupoGWP_0UNu-v1JeJiIINFkaM1SCWCkY -->
+		<!-- https://maps.googleapis.com/maps/api/geocode/json?latlng=6.510289999999999,100.8593769&result_type=street_address&key=AIzaSyBupoGWP_0UNu-v1JeJiIINFkaM1SCWCkY -->
+		<script type="text/javascript">
+			var lat = 0;//纬度
+			var lng = 0;//经度
+			function gateLan() {
+				console.log('jwd');
+				navigator.geolocation.getCurrentPosition(function(position) {
+					lng = position.coords.longitude;
+					lat = position.coords.latitude;
+					console.log('纬度='+ lat );
+					console.log('经度='+ lng );
+					gataDat()
+					// 获取当前地址
+					gataAddre(lat, lng)
+				})
+			}
+			// 用地址拿到经纬度
+			gataAddre(addText) {
+				var that = this;
+				var ajax = new XMLHttpRequest();
+				ajax.onreadystatechange = function(){
+					if(ajax.readyState==4 && ajax.status==200){
+						var addjson = JSON.parse(ajax.responseText)
+						var result = addjson.results
+						that.lat = result[0].geometry.bounds.southwest.lat
+						that.lng = result[0].geometry.bounds.southwest.lng
+						console.log(that.lat, that.lng)
+					}
+				}
+				<!-- https://maps.googleapis.com/maps/api/geocode/json?address=%22%E5%93%A5%E6%89%93%E4%BA%AC%E9%82%A3%E5%B3%87%E9%B2%81%E5%8E%BF%22&key=AIzaSyBupoGWP_0UNu-v1JeJiIINFkaM1SCWCkY -->
+				ajax.open("GET","https://maps.googleapis.com/maps/api/geocode/json?address="+ addText +"&result_type=street_address&key=AIzaSyBupoGWP_0UNu-v1JeJiIINFkaM1SCWCkY&language="+ addreLangu,false);//true异步请求，false同步
+				ajax.send(null);
+			},
+			
+			
+			// 用经纬度拿到当前的地址
+			function gataAddre(lat, lng) {
+				var ajax = new XMLHttpRequest();
+				ajax.onreadystatechange = function(){
+					if(ajax.readyState==4 && ajax.status==200){
+						var addjson = JSON.parse(ajax.responseText)
+						console.log(lat,lng);
+						var list = addjson.results
+						console.log(list);
+						if (list[0]) {
+							$('.address').text(list[0].address_components[2].long_name)
+						} else{
+						}
+						$.each(list, function(ind, val){
+							var list_com = val.address_components
+							$.each(list_com, function(index, val){
+								var lis_typ = val.types
+								var isb = false;
+								$.each(lis_typ, function(index, val){
+									if (val == 'locality') {
+										isb = true
+									} else if(val.substring(0,19) == 'administrative_area'){
+										isb = true
+									}
+								})
+							})
+						})
+					}
+				}
+				ajax.open("GET","https://maps.googleapis.com/maps/api/geocode/json?latlng="+ lat+","+ lng +"&result_type=street_address&key=AIzaSyBupoGWP_0UNu-v1JeJiIINFkaM1SCWCkY&language="+ addreLangu,false);//true异步请求，false同步
+				ajax.send(null);
+			}
+		</script>
+	</body>
+</html>

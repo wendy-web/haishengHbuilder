@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/jQuery.js"></script>
+	</head>
+	<body>
+	<div id="content" data_type="{$advertisement_info['type']}">
+		<i class="iconfont" onclick="history.back()">&#xe60d;</i>
+		<div class="share-bg">
+			<!-- 传人的值是0/1 判断是图片，视频 -->
+			{if $advertisement_info['type'] == 0}
+			<img src="{$advertisement_info['advertisement_img']}"/>
+			{else}
+			<video width="320" height="200" controls="" poster="{$advertisement_info['advertisement_img']}">
+				<source src="{$advertisement_info['video']}" type="video/mp4">
+			</video>
+			{/if}
+		</div>
+		<div class="share-text">
+			<div class="share-contect">
+				<h2 class="share_title">{$advertisement_info['advertisement_title']}</h2>
+				<p style="height: 15%">
+					{$advertisement_info['video_link']}
+				</p>
+				<p style="height: 35%" class="share_content">
+					{$advertisement_info['advertisement_content']}
+				</p>
+				<div class="persole-num">
+					<ul class="flex flex_start">
+						<li>
+							<img src="../addons/wx_shop/template/mobile/default/static/images/newcoupon/03.png"/>
+							<span>{$advertisement_info['browse_num']}</span>
+						</li>
+						<li>
+							<img src="../addons/wx_shop/template/mobile/default/static/images/newcoupon/02.png"/>
+							<span>{$advertisement_info['up_share_num']}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="share-btn">
+				<input type="button" value="立即分享"/>
+			</div>
+		</div>
+		<!-- 点击分享弹出框 -->
+		<div class="toShare">
+			<div class="toShare-box">
+				<div class="toShare-title">
+					<p>分享到</p>
+					<span>&#10006</span>
+				</div>
+				<ul>
+					<!-- 立即分享data-share是wx的分享类型 那边给的类名-->
+					<li class="wx_share" data-share="session">
+						<img src="../addons/wx_shop/template/mobile/default/static/images/newcoupon/share-01.png">
+						<p>微信好友</p>
+					</li>
+					<li class="wx_share" data-share="contentUrl">
+						<img src="../addons/wx_shop/template/mobile/default/static/images/newcoupon/share-02.png">
+						<p>微信朋友圈</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+		<div class="img_box" style="visibility: hidden;">
+		    <!--<img src="http://6836.chac.xyz/attachment/images/wx_shop/96/2020/01/de61edccfb3cad44b63e4895d4f3b41d.jpeg">-->
+		    <div>视频缓存中，请稍等。。。</div>
+		</div>
+		<!-- <script src="../addons/wx_shop/template/mobile/default/static/js/ShareSDK.js"></script> -->
+		
+		
+		<script>
+			// 分享
+			$(".wx_share").click(function () {
+			    var wx = api.require('wx');/* 引用wx这个模块 */
+			
+			    var share_type = $(this).attr('data-share');//分享类型
+			    var type = $('#content').attr('data_type');//广告类型 0图片，1视频
+				/* type=0 分享的是图片 */
+			    if(type == '0'){//图片
+			        var media = $('.share-bg img').attr('src');//图片
+			    }
+				/*  type=1 分享的是视频 */
+				else{
+			        var media = $('.share-bg').find('source').attr('src');
+			        var media_title = $('.share_title').text();//分享图片/视频的标题
+			        var media_content = $('.share_content').text();//分享图片/视频的文字描述内容
+			        // console.log(media_title);
+			        // console.log(media_content);
+			        // return
+			    }
+			
+			    if (media != undefined){
+			        api.download({
+			            url: media, // 分享图片地址
+			            report: true,
+			            cache: true,
+			            allowResume: true
+			        }, function(res, err) {
+			            // var jsonData = JSON.stringify(res);// 转成JSON格式
+			            // var result = $.parseJSON(jsonData);// 转成JSON对象
+			
+			            if (res.state == 1) {
+			                $('.img_box').css("visibility","hidden");
+			                if(type == '0'){//分享图片
+			                    wx.shareImage({
+			                        apiKey: '', //key值
+			                        scene: share_type,  //分享到朋友圈
+			                        thumb: 'widget://image/logo.png', // 缓存本地图片
+			                        contentUrl: res.savePath    //读取下载图片
+			                    }, function(res, err){
+			                        if (res.status) {
+			                            alert('分享成功');
+			                        } else {
+			                            // alert(err.code)
+			                            alert('分享失败')
+			                        }
+			                    })
+			                }else{//分享视频
+			                    wx.shareVideo({
+			                        apiKey: '',
+			                        scene: share_type,
+			                        title: media_title,
+			                        description: media_content,
+			                        thumb: 'widget://image/logo.png',
+			                        contentUrl: media
+			                    }, function(ret, err) {
+			                        if (ret.status) {
+			                            alert('分享成功');
+			                        } else {
+			                            alert(err.code);
+			                        }
+			                    });
+			                }
+			
+			            } 
+			            else if (res.state == 0){//下载中
+			                $('.img_box').css("visibility","visible");
+			            }else{
+			                alert('下载失败');
+			                return
+			            }
+			        })
+			    }else{
+			        alert('参数错误，无法分享');
+			    }
+		</script>
+	</body>
+</html>

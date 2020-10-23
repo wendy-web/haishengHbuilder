@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>二维码合成照片</title>
+		<script src="js/html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<!-- 遮罩层 -->
+		<img id="fx_imgsrc" src="" alt="" style="opacity: 0;">//存放img图片的位置
+		<div class="addfriend_mask">
+			<div class="maskContent">
+				<!-- 生成这个id为canvas里面的所有元素的图片 -->
+				<div class="addfriend_img_box" id="canvas">
+					<img id="imgss" src="../addons/wx_shop/template/mobile/default/static/img/erwei_sm_bg.jpg" alt="">
+					<div class="user_img_name">
+						<div class="addfriend flex flex-center-center">
+								<img src="{$member['avatar']}" alt="" id="circle_img">
+							<div class="add_name">{$member['nickname']}</div>
+						</div>
+					</div>
+					<div class="addfriend_img">
+						<img src="{$tupian}" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+<script type="text/javascript">
+	// 点击保存合成图片
+	$("body").on("click", ".addfriend_btn", function () {
+		
+		/*
+			注：html2canvas的合成照片是是从窗口的左上角进行合成的
+			如果进行部分的区域的合成，要将文档距离窗口的左上交的偏移量进行回归
+			不然会出现空白的偏移合成部分
+			var copyDom = $("#canvas");
+			var context = canvas.getContext("2d");
+			var rect = copyDom.get(0).getBoundingClientRect(); //获取这个dom元素的所有信息
+			context.translate(-rect.left,-rect.top);//进行偏移量的回归，再进行合成
+			
+		*/ 
+		// 得到dom元素的里面的所有值,并看出其在页面的所有偏移值
+		
+		// 将其偏移量还原到0
+		
+		
+		// canvas截图
+	    var w = $("#imgss").width();
+	    var h = $("#imgss").height();
+	    //要将 canvas 的宽高设置成容器宽高的 2 倍
+	    var canvas = document.createElement("canvas");
+	    var images = document.getElementById("fx_imgsrc")
+	    canvas.width = w *2.5;
+	    canvas.height = h *2.5;
+	    canvas.style.width = w + "px";
+	    canvas.style.height = h + "px";
+	    var context = canvas.getContext("2d");
+	    //然后将画布缩放，将图像放大两倍画到画布上
+	    context.scale(2.5,2.5);
+		// 利用html2canvas对id为canvans的进行合成图片
+	     html2canvas(document.querySelector('#canvas'),{
+			taintTest : false,     
+			useCORS : true,            
+			allowTaint :false, 
+	        canvas: canvas,
+	        onrendered: function(canvas) {
+				// console.log(canvas)
+	            canvas.setAttribute('style',"width:100%;height:100%;");
+	            console.log(canvas.toDataURL())
+	            images.src = canvas.toDataURL();
+	            console.log(images.src)
+	            $.ajax({
+					url: "{php echo mobileUrl('member/images')}",
+					type: 'post',
+					data: { 'images': images.src },
+					dataType: 'json',
+					success: function (data) {
+						if (data.status == 0) {
+							FoxUI.toast.show('分享码生成失败');
+						} else {
+							$('#img').val(data.result.img);
+							var img = $('#img').val();
+							var str = '<img class="fnall_img" src="' + img + '" alt=""/>'
+							$(".save_img").append(str)
+							save()
+							share()
+						}
+						
+					}
+				})
+	        }
+	    });
+	})
+	function save() {
+		$("body").on("click", "#save_img", function () {
+			var date = new Date();
+			var time = date.getTime();
+			time++;
+			// var url=$(this).attr('src'); 
+			var url = $('.fnall_img').attr('src');
+			console.log(url);
+			// alert(url)
+			api.actionSheet({
+				title: '是否保存图片到本地？',
+				cancelTitle: '取消',
+				buttons: ['是'],
+				style:{
+					fontNormalColor:'#8f8f8f',
+				}
+	
+			}, function (ret, err) {
+				if (ret.buttonIndex == 1) {
+					api.download({
+						url: url,
+						savePath: 'fs://test' + time + '.png',
+						report: true,
+						cache: true,
+						allowResume: true
+					}, function (ret, err) {
+						// alert(url)
+						// alert(ret.state)
+						if (ret.state == 1) {
+							// alert(222)
+							/* api.toast({ msg : '图片下载成功'});*/
+							api.saveMediaToAlbum({
+								path: 'fs://test' + time + '.png',
+							}, function (ret, err) {
+								if (ret && ret.status) {
+									alert('图片已成功保存到相册');
+								} else {
+									alert('图片保存到相册失败');
+								}
+							});
+						} else {
+	
+						}
+					});
+				}
+			});
+		})
+	}
+	
+	// 分享
+	function share() {
+	$('.share_li').click(function () {
+		// alert("开发中，敬请期待！")
+		var url = $('#img').val();
+		// alert(url)
+		var wx = api.require('wx');
+		api.imageCache({
+			url: url
+		}, function (ret, err) {
+			url = ret.url;
+		});
+		api.download({
+			url: url, // 分享图片地址
+			report: true,
+			cache: true,
+			allowResume: true
+		}, function (res, err) {
+			var aa = JSON.stringify(res);
+			if (res.state == 1) {
+				//console.log('下载成功')
+				// alert(url)
+				// alert(aa)
+				// var cc = aa.savePath
+				// alert(res.savePath)
+				wx.isInstalled(function (ret, err) {
+					// alert(ret)
+					if (ret.installed) {
+						wx.shareImage({
+							apiKey: 'wx099a74e789c95487',		//key值
+							scene: 'session',					//分享到好友
+							thumb: 'widget://image/logo.png',				// 缓存本地图片
+							contentUrl: res.savePath,		//读取下载图片
+						}, function (ret, err) {
+							// alert(ret.contentUrl)
+							if (ret.status) {
+								alert('分享成功');
+								$(".all_img_box").hide()
+								$('.addfriend_mask').hide()
+								$('#img').val("");
+								var aa = JSON.stringify(res);
+								// alert(ret)
+								// api.removePrefs({
+								// 	key: 'fs://thumb_lian_1.png'
+								// });
+							} else {
+								//alert(err.code);
+							}
+						});
+					} else {
+						alert('当前设备未安装微信客户端');
+					}
+				});
+			} else {
+				var bb = JSON.stringify(err);
+				console.log(bb);
+				// alert('开发中，敬请期待');
+			}
+		})
+	   
+	});
+</script>
+	</body>
+</html>

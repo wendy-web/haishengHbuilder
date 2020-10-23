@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>axios的编程</title>
+</head>
+<body>
+  <div id="app">前后端的交互</div>
+  <script type="text/javascript" src="js/axios.js"></script>
+  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+	axios.get('http://localhost:3000/data').then(function(ret){
+		// 注意data属性是固定的用法，用于获取后台的实际数据
+		// console.log(ret.data)
+		console.log(ret)
+	})
+	
+	// axios get请求传参 三种形式
+	console.log('axios get 请求传参')
+	axios.get('http://localhost:3000/axios?id=123').then(function(ret){
+	  console.log(ret.data)
+	})
+	axios.get('http://localhost:3000/axios/123').then(function(ret){
+	  console.log(ret.data)
+	})
+	axios.get('http://localhost:3000/axios', {
+	  params: {
+	    id: 789
+	  }
+	}).then(function(ret){
+	  console.log(ret.data)
+	})
+	
+	
+	// axios delete 请求传参
+	console.log('axios delete 请求传参')
+	axios.delete('http://localhost:3000/axios', {
+	  params: {
+	    id: 111
+	  }
+	}).then(function(ret){
+	  console.log(ret.data)
+	})
+	
+	// post的两种传参的方法
+	axios.post('http://localhost:3000/axios', {
+	  uname: 'lisi',
+	  pwd: 123
+	}).then(function(ret){
+	  console.log(ret.data)
+	})
+	// 通过URLSearchParams
+	var params = new URLSearchParams();
+	params.append('uname', 'zhangsan');
+	params.append('pwd', '111');
+	axios.post('http://localhost:3000/axios', params).then(function(ret){
+	  console.log(ret.data)
+	})
+	
+	// axios put 请求传参
+	axios.put('http://localhost:3000/axios/123', {
+	  uname: 'lisi',
+	  pwd: 123
+	}).then(function(ret){
+	  console.log(ret.data)
+	})
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <button-counter></button-counter>
+    <button-counter></button-counter>
+    <button-counters></button-counters>
+	<hello-com></hello-com>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+    /*
+      组件注册
+	  1.data的值必须是函数
+	  2.组件的模版必须是单个闭合的
+	  3.组件模版的内容可以是模版字符串
+    */
+    Vue.component('button-counter', {
+		data: function() {
+			return {
+				count: 0
+			}
+		},
+		template: '<button @click="handle">点击了{{count}}</button>',
+		methods:{
+			handle: function(){
+				this.count += 2
+			}
+		}
+	})
+	// 使用模版字符串
+	Vue.component('button-counters', {
+	  data: function(){
+	    return {
+	      count: 0
+	    }
+	  },
+	  template: `
+	    <div>
+	      <button @click="handle">点击了{{count}}次</button>
+	      <button>测试123</button>
+	    </div>
+	  `,
+	  methods: {
+	    handle: function(){
+	      this.count += 1;
+	    }
+	  }
+	})
+	
+	
+	
+	// 局部组件
+	var helloCom = {
+		data: function() {
+			return {
+				msg: '局部组件'
+			}
+		},
+		template: '<div>{{msg}}</div>'
+	}
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        
+      },
+	  components:{
+		  'hello-com': helloCom
+	  }
+    });
+  </script>
+</body>
+</html>

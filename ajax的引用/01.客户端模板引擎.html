@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>模板引擎的使用(script中使用html)</title>
+		<!-- 1.引入模版引擎的库文件引入到当前的页面 -->
+		<script src="js/template-web.js"></script>
+	</head>
+	<body>
+		<div id="content"></div>
+		
+		<script type="text/html" id="tpl">
+			<p>这是模版引擎中所渲染上来的数据</p>
+			<h1>{{username}} ---- {{age}}</h1>
+		</script>
+		<script type="text/javascript">
+			// tpl是id值 数据是｛｝对象模型
+			var html = template('tpl', {username: 'wedy', age: 21})
+			
+			// 将拼接好的html返回到id为 content当中去
+			document.getElementById('content').innerHTML = html
+		</script>
+	</body>
+</html>

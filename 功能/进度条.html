@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>进度条</title>
+		<style>
+			.apply-wrapper{
+				padding:10px;
+				box-sizing: border-box;
+			}
+			.apply-wrapper p{
+				font-weight: 600;
+				text-align: center;
+			}
+			/* 进度条 */
+			.progress_wrapper{
+				width: 100%;
+				position: relative;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: 10px;
+				background: white;
+			}
+			.btn_num{
+				width: 30px;
+				height: 30px;
+				box-sizing: border-box;
+				flex: 0px 0px 20px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 0px 5px;
+			}
+			.btn_num img{
+				width: 100%;
+			}
+			.progress_box{
+				position: relative;
+				display: flex;
+				height: 20px;
+				flex: 1;
+				align-items: center;
+				border-radius: 10px;
+				background-color:#DDDDDD;
+			}
+			
+			.progress_bg{
+				height: 20px;
+				width: 100%;
+				overflow: hidden;
+				background-color:#DDDDDD;
+				position: absolute;
+				top: 0;
+				opacity: 0;
+			}
+			.progress_bar{
+				width: 0;
+				height: 20px;
+				border-radius: 10px;
+				background: #88B5D4;
+				position: absolute;
+				top: 0;
+			}
+			.progress_btn{
+				width: 23px;
+				height: 23px;
+				border-radius: 50%;
+				position: absolute;
+				top: -2px;
+				background:#F8AA12;
+				/* left: 10px; */
+				margin-left: -10px;
+				cursor: pointer;
+				box-sizing:border-box;
+				color: #E96711;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				/* animation: momey .3s; */
+			}
+			/* 鼠标抬起的动画 */
+			@keyframes momey{
+				0%{
+					transform: rotate(0deg);
+				}
+				25%{
+					transform: rotate(180deg);
+				}
+				50%{
+					transform: rotate(360deg);
+				}
+				75%{
+					transform: rotate(180deg);
+				}
+				100%{
+					transform: rotate(360deg);
+				}
+			}
+			
+			.progress_btn img{
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="apply-wrapper">
+			<p>申请金额(元)</p>
+			<p id="text">5556565</p>
+			<div class="progress_wrapper">
+				<!-- 点击减号 -->
+				<div class="btn_num reduce_btn" id="reduce" onclick="moveMou(this)">
+					<img src="/addons/sz_yi/template/mobile/style1/static/images/loans/reduce.png" />
+				</div>
+				<div class="progress_box">
+					<!-- 进度条 -->
+					 <div class="progress_bar"></div>
+					<!-- 模拟的可点击的进度条背景 不可见 -->
+					 <div class="progress_bg"></div>
+					<!-- 进度按钮 -->
+				     <div class="progress_btn">
+						<img src="/addons/sz_yi/template/mobile/style1/static/images/loans/loan-icon.png" />
+					 </div>
+				</div>
+				<!-- 点击减号 -->
+				<div class="btn_num reduce_btn" id="reduce" onclick="moveMou(this)">
+					<img src="/addons/sz_yi/template/mobile/style1/static/images/loans/reduce.png" />
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var amount = 400000; //最高的金额数
+			var fist_money = 10000; //刚开始的金额
+			var now_num;// 当前选中的金额
+			
+			var progress_box = $(".progress_box").width()//进度条的长度
+			var tag = false; //是否可以进行点击
+			var dx = 0; //手指刚开始触碰的位置
+			var left = 0;
+			var bgleft = 0;
+			// 手指移动
+			$('.progress_btn').on('touchstart', function (e) {
+				dx = e.originalEvent.targetTouches[0].pageX - left;
+				tag = true;
+			});
+			
+			// 手指移动
+			$('.progress_btn').on('touchmove', function (e) {
+				if (tag) {
+					// 当前手指的x距离 - 刚点击的x轴距离
+					left = e.originalEvent.targetTouches[0].pageX - dx;
+					// 通过进度条计算当前的数值
+					now_num = parseInt(((left / progress_box) * (amount - fist_money))) + fist_money
+					now_num = (now_num <= fist_money) ? fist_money : now_num,
+					now_num = (now_num >= amount) ? amount : now_num;
+					// 进行三位数的取整
+					now_num = number(now_num, 3)
+					leftMove(left, now_num)
+				}
+			});
+			
+			// 手指抬起
+			$('.progress_btn').on('touchend', function (e) {
+				tag = false
+				// 钱币的旋转动画
+				$(".progress_btn").css("animation", "momey .5s")
+				setTimeout(function(){
+					$(".progress_btn").css("animation", "")
+				}, 600)
+			});
+			
+			// 进度条的偏移
+			function leftMove(left, now_num) {
+				if (left <= 0) {
+					left = 0;
+				} else if (left > progress_box) {
+					left = progress_box;
+				}
+				// 进度条和进度按钮的偏移
+				$('.progress_btn').css('left', left);
+				$('.progress_bar').animate({width: left}, 3);
+				// 通过进度条计算出来的位置进行数值的计算
+				$('#text').html(now_num);
+			}
+			
+			// 千分位的取整
+			function number(num, v){
+				var vv = Math.pow(10, v)
+				num = Math.round(num/vv)*vv
+				return num;
+			}
+		</script>
+	</body>
+</html>

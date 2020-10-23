@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/jQuery.js"></script>
+	</head>
+	<body>
+		<input id="input-file" type="file" multiple="multiple" accept="image/*" >
+		<img src=""  id="imgurl"/>
+		
+		<script>
+			$("#input-file").on("change",function(){
+				var filePath = $(this).val(),         //获取到input的value，里面是文件的路径  
+				fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),  
+				imgBase64 = '',      //存储图片的imgBase64  
+				fileObj = document.getElementById('input-file').files[0]; //上传文件的对象,要这样写才行，用jquery写法获取不到对象  
+				console.log(filePath)
+				$('#imgurl').attr('src', filePath)
+				// 检查是否是图片  
+				if( !fileFormat.match(/.png|.jpg|.jpeg/) ) {  
+					alert('上传错误,文件格式必须为：png/jpg/jpeg');  
+					return;    
+				}  
+						        
+				// 调用函数，对图片进行压缩  
+				var backimg = compress(fileObj,function(imgBase64){  
+					imgBase64 = imgBase64;//存储转换后的base64编码  
+				});
+			});
+			
+			
+			// 对图片进行压缩  
+			function compress(fileObj, callback){   
+				if ( typeof (FileReader) === 'undefined') {    
+					console.log("当前浏览器内核不支持base64图标压缩");    
+					//调用上传方式不压缩    
+					directTurnIntoBase64(fileObj,callback);  
+				} else {       
+				        var reader = new FileReader();    
+					reader.onload = function (e) { //要先确保图片完整获取到，这是个异步事件   
+			 
+					                	
+					    var image = new Image();  
+					    image.src=e.target.result;
+					    image.onload = function(){    
+					        square = 100,   //定义画布的大小，也就是图片压缩之后的像素  
+					        canvas = document.createElement('canvas'), //创建canvas元素  
+					        context = canvas.getContext('2d'),  
+					        imageWidth = Math.round(square*image.width),    //压缩图片的大小  
+					        imageHeight = Math.round(square*image.height), 
+					        data = '';   
+					  						
+					        canvas.width = imageWidth;
+					        canvas.height = imageHeight;   
+					        context.clearRect(0, 0, imageWidth, imageHeight);  //在给定矩形内清空一个矩形   
+					        context.drawImage(this, 0, 0, imageWidth, imageHeight);    
+					        var data = canvas.toDataURL('image/jpeg',0.6);    
+					        //压缩完成执行回调    
+					        callback(data);    
+				            };      
+			            };    
+				reader.readAsDataURL(fileObj);    
+						            
+				}  
+			} 
+			
+			
+			function directTurnIntoBase64(fileObj,callback){  
+				var r = new FileReader();  
+				// 转成base64  
+				r.onload = function(){  
+					//变成字符串  
+					imgBase64 = r.result;  
+					//console.log(imgBase64);  
+					callback(imgBase64);  
+				}  
+				r.readAsDataURL(fileObj);    //转成Base64格式  
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>输入密码的弹出框</title>
+		<style>
+			/* 输入资金密码的弹窗 */
+			.moneyPsw{
+				  position: fixed;
+				  top: 0;
+				  left: 0;
+				  width: 100%;
+				  height: 100%;
+				  background: pink;
+				  z-index: 199;
+				  background: rgba(0, 0, 0, 0.7);
+				  /* display: none; */
+			}
+			.moneyPsw>div{
+				  position: relative;
+				  top: 50%;
+				  left: 20%;
+				  width: 60%;
+				  transform: translateY(-50%);
+				  background: white;
+				  border-radius: 5px;
+				  text-align: center;
+				  animation: moneyPsw .3s;
+			}
+			@keyframes moneyPsw{
+				from{opacity: 0;}
+				to{opacity: 1;}
+			}
+			.moneyPsw>div p{
+				  line-height: 2rem;
+			}
+			#pswId{
+				  width: 90%;
+				  border: 1px solid #eaeaea;
+				  padding: 0 5px;
+				  box-sizing: border-box;
+				  line-height: 1.5rem;
+				  border-radius: 20px;
+			}
+			.moneyPsw .pasw_btn{
+				  height: 2rem;
+				  display: flex;
+				  margin-top: 0.5rem;
+			}
+			.pasw_btn input{
+				  width: 50%;
+				  background: transparent;
+				  border: none;
+				  border-top: 1px solid #efefef;
+				  line-height: 2rem;
+				  box-sizing: border-box;
+			}
+			.pasw_btn input:first-child{
+				  border-right: 1px solid #efefef;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 输入资金密码弹框 -->
+		<div class="moneyPsw">
+			<div>
+				<p>资金密码</p>
+				<input type="password" placeholder="请输入资金密码" id="pswId"/>
+				<div class="pasw_btn">
+					<input type="button" value="取消" id="cancelPsw"/>
+					<input type="button" value="确定" id="ensurePsw"/>
+				</div>
+			</div>
+		</div>
+		<script>
+			$('#ensurePsw').click(function(){
+				var inputNum = $('#pswId').val()
+				console.log(inputNum)//输入框输入的内容
+				showOrHide()
+			})
+			
+			//取消输入密码
+			$("#cancelPsw").click(showOrHide)
+			// 显示或隐藏的调用方法
+			function showOrHide(){
+				$('.moneyPsw').toggle()
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>异步promise的编程</title>
+</head>
+<body>
+  <div id="app">前后端的交互</div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+	// 前后端的交互-异步编程与promise
+	var ret = '==='
+	$.ajax({
+		url: 'http://localhost:3000/data',
+		success: function(data){
+			ret = data
+			console.log(ret)
+		}
+	})
+	console.log(ret)
+  </script>
+</body>
+</html>

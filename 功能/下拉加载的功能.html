@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head lang="en"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="./css/style1.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <script src="./js/jquery.min.js"></script>
+	<script src="js/jquery.i18n.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/langu.js"></script>
+    <script src="./js/rem.js"></script>
+    <script src="js/layer/layer.js"></script>
+	<script src="js/alasql.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/xlsx.core.min.js" type="text/javascript" charset="utf-8"></script>
+    <title i18n="i18n.plback">排队返</title>
+    <style>
+        body{background-color: rgb(245, 245, 245);font-family: 'Guildford Pro';}
+        @font-face {
+          font-family: 'iconfont';  /* project id 1672540 */
+          src: url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.eot');
+
+          src: url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.eot?#iefix') format('embedded-opentype'),
+
+          url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.woff2') format('woff2'),
+
+          url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.woff') format('woff'),
+
+          url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.ttf') format('truetype'),
+
+          url('//at.alicdn.com/t/font_1672540_vztqx2ejqup.svg#iconfont') format('svg');
+
+        }
+
+        /*通用样式*/
+
+        /* common */
+
+        .flex {display: -webkit-box;      display: -moz-box;         display: -ms-flexbox;     display: -webkit-flex;     display: -moz-flex;display: -ms-flex;display: -o-flex;display: flex;}
+
+        /* 宽度随屏幕改变变化 */
+
+        .flex-1 {flex: 1;-webkit-flex: 1;}
+
+        /* 垂直 水平 居中 */
+
+        .flex-center {justify-content: center;-webkit-justify-content: center;align-items: center;-webkit-align-items: center;}
+
+        /* 垂直 居中 */
+
+        .flex-ver {align-items: center;-webkit-align-items: center;}
+
+        /*中间空白左右各一个*/
+
+        .flex-around{justify-content: space-between;-webkit-justify-content: space-between;}
+
+        /* 换行 */
+
+        .flex-wrap{flex-wrap: wrap;-moz-flex-wrap:wrap;-webkit-flex-wrap: wrap;}
+
+        /*标题*/
+
+        .Rucian_Bt{height: 0.5rem;background-color: rgb(255, 255, 255);font-size: 0.16rem;color: rgb(0, 0, 0);position: fixed;width: 100%;top: 0;left: 0;z-index: 30;font-weight: bold;}
+
+        .Rucian_Bt i{width: 0.2rem;position: absolute;left: 0.1rem;}
+		.Rucian_Box{
+			/* margin-top: 0.5rem; */
+			position: fixed;
+			top: 0.5rem;
+			left: 0;
+			width: 100%;
+			overflow: hidden;
+			overflow-y: scroll;
+		}
+		.tabLis{
+			height: 0.44rem;
+			border-bottom: 0.1rem solid rgb(245, 245, 245);
+			border-top: 0.01rem solid rgb(245, 245, 245);
+			background-color: #fff;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			box-sizing: border-box;
+		}
+		.tabLis li{
+			height: 0.44rem;
+			line-height: 0.44rem;
+		}
+		.tabLis .active{
+			border-bottom: 2px solid #FF6600;
+		}
+		.tab{
+			width: 100%;
+			text-align: center;
+			border: 0;
+		}
+		.tab thead tr:first-child{
+			background: #dedede;
+		}
+		.tab thead tr:first-child td{
+			height: 35px;
+		}
+		.tab td{
+			border-bottom: 0.1rem solid rgb(245, 245, 245);
+		}
+		.btn{
+			border: 1px solid #999;
+			border-radius: 5px;
+			padding: 5px 5px;
+			margin-top: 5px;
+			background: transparent;
+		}
+		.tab th{
+			font-weight: normal;
+		}
+		.tapMess{
+			overflow: hidden;
+			overflow: scroll;
+			position: fixed;
+			top: 41%;
+			left: 0;
+			width: 100%;
+			height: 87%;
+			overflow: hidden;
+			overflow: scroll
+		}
+		.tapMess tr{
+			width: 100%;
+		}
+		.lis{
+			width: 100%;
+			position: fixed;
+			left: 0;
+			height:calc(100% - 0.9rem);
+			top: 0.9rem;
+			overflow: scroll;
+		}
+		.lis li{
+			display: flex;
+			justify-content: space-around;
+			align-content: center;
+			text-align: center;
+			height: 0.4rem;
+			line-height: 0.4rem;
+		}
+		.lis li:first-child{
+			background: #dedede;
+		}
+		.lis li p{
+			padding: 0;
+			margin: 0;
+		}
+		
+    </style>
+</head>
+<body>
+    <!-- 标题 -->
+    <div class="Rucian_Bt flex flex-center">
+        <i class="iconfont" onClick="javascript :history.back(-1);">&#xe60f;</i>
+        <div i18n="i18n.plback">排队返</div>
+		<!-- <div class="lod">下载</div> -->
+    </div>
+    <!-- Box -->
+    <div class="Rucian_Box">
+		<ul class="tabLis">
+			<li class="active" data-type="0" i18n="i18n.">排队中</li>
+			<li data-type="1" i18n="i18n.">已出局</li>
+		</ul>
+		<ul class="lis">
+			<li>
+				<p i18n="i18n.">商家名称</p>
+				<p i18n="i18n.">金额</p>
+				<p i18n="i18n.">时间</p>
+				<p i18n="i18n.">排队列表</p>
+				<button class="btn" style="visibility: hidden;" i18n="i18n.">转换</button>
+			</li>
+		</ul>
+    </div>
+<script>
+var language = sessionStorage.getItem("language")||"cn";
+var remindLangu;//提示的语言对象
+switch(language){
+	case "cn":
+		remindLangu = remind_cn
+		break;
+	case "en":
+		remindLangu = remind_en
+		break;
+	default:
+		remindLangu = remind_ml
+		break
+}
+var page = 1;
+var scrlBoo = true;
+var user_id = localStorage.getItem('user_id');
+var Qqid= window.location.href.split("?")[1].split("=")[1]; //判断请求
+var href = localStorage.getItem('url_ws')
+
+$('.tabLis li').eq(Qqid).addClass('active').siblings().removeClass('active')
+$('.tabLis li').click(function(){
+	$(this).addClass('active').siblings().removeClass('active')
+	Qqid = $(this).data('type')
+	Qq_fun(Qqid, 1)
+})
+ Qq_fun(Qqid, page)
+//请求
+function Qq_fun(Qqid, page){
+    var url = href+`/addons/shimmer_liveshop/api/4/2/backpool/order/list?type=${Qqid}&page=${page}&limit=15`
+    $.ajax({
+        url:url,    //请求的url地址
+        dataType:"json",   //返回格式为json
+        async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+        data:{
+        },    //参数值
+        type:"GET",   //请求方式
+        beforeSend: function (XMLHttpRequest) {
+            XMLHttpRequest.setRequestHeader("Authori-zation", user_id);
+        },
+        success:function(res){
+			var lis = res.data
+			console.log(lis);
+			var html ='';
+			if(page == 1){
+				html +=`<li>
+						<p>`+ remindLangu.stopName +`</p>
+						<p>`+ remindLangu.Money +`</p>
+						<p>`+ remindLangu.time +`</p>
+						<p>`+ remindLangu.plbacklist +`</p>
+						<p></p>
+					</li>`
+			}
+            if (lis.length > 0) {
+                for (var i = 0; i < lis.length; i++) {
+                    html += `
+					<li>
+						<p>`+ lis[i].store.name +`</p>
+						<p>￥`+ lis[i].money+`</p>`
+					if(Qqid == 0){
+						html += `<p>`+ lis[i].created_at+`</p>`
+					} else{
+						html += `<p>`+ lis[i].updated_at+`</p>`
+					}
+					html +=`<p>2/10</p>`
+					if(Qqid == 0){
+						html += `<button type="button" class="btn" data-type="`+ lis[i].id +`">转换</button>`
+					} else{
+						html += `<button type="button" class="btn" data-type="`+ lis[i].id +`" style="opacity: 0;">转换</button>`
+					}
+					`</li>`
+                }
+            }
+			if(lis.length < 10) {
+				html += `<li>`+ remindLangu.nolist +`</li>`
+				scrlBoo = false
+			} else{
+				scrlBoo =true
+			}
+			// 如果是第一页
+			if(page == 1){
+				$('.lis').html(html)
+			} else{
+				$('.lis').append(html)
+			}
+        },
+        error:function(err){
+            //请求出错处理
+            console.log(err);
+        }
+    });
+}
+$('.lis').on('click', '.btn', function(){
+	var orderid = $(this).data('type')
+	var url = href+`/addons/shimmer_liveshop/api/4/2/backpool/order/conversion`
+	$.ajax({
+	    url:url,    //请求的url地址
+	    dataType:"json",   //返回格式为json
+	    async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+	    data:{
+			orderid:orderid
+	    },    //参数值
+	    type:"POST",   //请求方式
+	    beforeSend: function (XMLHttpRequest) {
+	        XMLHttpRequest.setRequestHeader("Authori-zation", user_id);
+	    },
+	    success:function(res){
+			console.log(res);
+			layer.msg(res.msg);
+			setTimeout(function() {
+				window.location.reload();
+			}, 500);
+		}
+	})
+})
+$('.lis').scroll(function(e){
+	if(this.scrollTop + $(this).height() >= this.scrollHeight){
+		if(scrlBoo){
+			scrlBoo = false
+			page++;
+			Qq_fun(Qqid, page)
+		}
+	}
+})
+</script>
+</body>
+</html>

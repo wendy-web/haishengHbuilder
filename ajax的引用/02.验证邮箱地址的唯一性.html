@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>模板引擎的使用(script中使用html)</title>
+		<style>
+			p:not(:empty) {
+				padding: 15px;
+			}
+			.container {
+				padding-top: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div class="form-group">
+				<label>邮箱地址</label>
+				<input type="email" class="form-control" placeholder="请输入邮箱地址" id="email">
+			</div>
+			<!-- 错误 bg-danger 正确 bg-success -->
+			<p id="info"></p>
+		</div>
+		<script src="js/ajax.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var emailInput = document.getElementById('email')
+			var infoMess = document.getElementById('info')
+			emailInput.onblur = function(){
+				var email =  this.value;
+				var reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+				if(reg.test(email)) {
+					infoMess.innerHTML = '请输入符合邮箱格式的地址'
+					infoMess.className ='bg-danger'
+					return;
+				}
+				ajax({
+					type: 'get',
+					url: 'http://localhost:3000/verifyEmailAdress',
+					data: {
+						email: email
+					},
+					success: function(result){
+						infoMess.innerHTML = result.message
+						infoMess.className = 'bg-success'
+					},
+					error: function(result) {
+						infoMess.innerHTML = result.message
+						infoMess.className = 'bg-danger'
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div>{{msg}}</div>
+    <button @click='update'>更新</button>
+    <button @click='destroy'>销毁</button>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+    /*
+      Vue实例的生命周期
+      
+    */
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        msg: '生命周期'
+      },
+	  // 方法
+      methods: {
+        update: function(){
+          this.msg = 'hello';
+        },
+        destroy: function(){
+			// 销毁相关资源,datali里面的数据
+          this.$destroy();
+        }
+      }, 
+      beforeCreate: function(){
+        console.log('beforeCreate');
+      },
+      created: function(){
+        console.log('created');
+      },
+      beforeMount: function(){
+        console.log('beforeMount');
+      },
+	  // 页面的初始化完成,可以进行后台的访问接口的执行
+      mounted: function(){
+        console.log('mounted');
+      },
+	  // 事件更新的时候执行  update事件被触发的时候执行
+      beforeUpdate: function(){
+        console.log('beforeUpdate');
+      },
+      updated: function(){
+        console.log('updated');
+      },
+	  // 页面中的某个数据被销毁后执行  destroy事件被触发的时候执行
+      beforeDestroy: function(){
+        console.log('beforeDestroy');
+      },
+      destroyed: function(){
+        console.log('destroyed');
+      }
+    });
+  </script>
+</body>
+</html>

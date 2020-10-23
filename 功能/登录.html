@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+<script type="text/javascript">
+	password_fun()
+	// localStorage储存数据输入的用户名和密码
+	function password_fun(){
+		var password_x = localStorage.getItem('password');
+		var mobile_x = localStorage.getItem('mobile');
+		// console.log(mobile_x)
+		if(mobile_x!=null){
+			$('#password').val(password_x)
+			$('#mobile').val(mobile_x)
+		}
+	}
+	// 登录
+	function login(element) {
+		var mobile = $('#mobile').val();  //检验手机号码
+		// var element = $(this);
+		var reg = /^1(3|4|5|6|7|8|9)\d{9}$/; 
+		if ($(element).attr('saving')) {
+			return;
+		}
+		if(reg.test(mobile) === false) { 
+			layerMsg('请输入正确的手机号码'); 
+			return; 
+		}
+	
+		var password = $('#password').val()
+		if (password == '') {
+			layerMsg('请输入密码')
+			return; 
+		}
+	
+		var captcha = $('#captcha').val();
+		if (captcha == '') {
+			layerMsg('请输入验证码')
+			return;
+		}
+	
+		$(element).attr('saving', 1);
+		$.post('{:url('index/login/login')}', {
+			mobile: mobile,
+			password: password,
+			captcha: captcha,
+		}, function(res) {
+			if (res.code == 1) {
+				layerMsg('登陆成功');
+				localStorage.setItem('mobile',$("#mobile").val());
+				localStorage.setItem('password',$("#password").val());
+				setTimeout(function() {
+					location.href = "{:url('index/index/home')}";
+				}, 1500);
+			} else {
+				$('#captcha').val('');
+				$(element).removeAttr('saving');
+				$('#code').attr('src', '{:captcha_src()}');
+				layerMsg(res.msg);
+			}
+		});
+	}
+</script>
+	</body>
+</html>

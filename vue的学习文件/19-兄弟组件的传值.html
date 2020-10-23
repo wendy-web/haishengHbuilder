@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div :style="{fontSize: fontSize + 'px'}">{{pmsg}}</div>
+    <menu-item :parr='parr' @enlarge-text='handle($event)'></menu-item>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+   /*
+		兄弟组件的传值
+		1.提供一个事件的中心
+			var hub = new Vue()
+		2.监听和销毁事件
+			hub.$on('add-to', addTodo)
+			hub.$off('add-to')
+		3.触发事件
+			hub.$emit('add-to', id)
+   */
+   // 提供一个事件的中心
+	var hub = new Vue()
+	
+    Vue.component('test-tom', {
+      props: ['parr'],
+      data: function() {
+        return {
+          num: 0
+        }
+      },
+      template: `
+		  <div>
+			<div>TOM:{{num}}</div>
+			<div>
+			<button @click='handele'></button>
+			</div>
+		  </div>
+	  `,
+	  methods: {
+		handle: function(){
+			// 触发兄弟组件的事件
+			hub.$emit('tom-jerry', 1)
+		}
+	  },
+	  mounted: function(){
+		  // 监听事件
+		hub.$on('tom-event', (val) => {
+			this.num += val
+		})
+	  }
+    });
+	
+	Vue.component('test-jerry', {
+	  props: ['parr'],
+	  data: function() {
+	    return {
+	      num: 0
+	    }
+	  },
+	  template: `
+		  <div>
+			<div>TOM:{{num}}</div>
+			<div>
+			<button @click='handele'></button>
+			</div>
+		  </div>
+	  `,
+	  methods: {
+		handle: function(){
+			// 触发兄弟组件的事件
+			hub.$emit('tom-event', 1)
+		}
+	  },
+	  mounted: function(){
+		  // 监听事件
+		hub.$on('tom-jerry', (val) => {
+			this.num += val
+		})
+	  }
+	});
+	
+	
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        pmsg: '父组件中内容',
+		parr: ['apple', 'banner', 'orange'],
+		fontSize: 10
+      },
+	  methods:{
+		  handle: function(evl) {
+			  this.fontSize += evl
+		  }
+	  }
+    });
+  </script>
+</body>
+</html>

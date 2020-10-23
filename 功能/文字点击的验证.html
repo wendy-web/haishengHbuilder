@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/verify.css"/>
+		<script src="../js/jQuery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/verify.js" type="text/javascript" charset="utf-8"></script>
+		<meta charset="utf-8">
+		<title>文字验证</title>
+		<style>
+			/* 文字验证 */
+			.sc_box{
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.48);
+				display: none;
+			}
+			.rucian_yzm{
+				position: absolute !important;
+				/* background-color: rgb(255, 255, 255); */
+				text-align: center;
+				border-radius: 10px;
+				left: 50%;
+				transform: translateX(-50%) translateY(-50%);
+				top: 50%;
+				z-index: 22;
+			}
+			.verify-img-out{
+				height: auto!important;
+			}
+			.verify-img-panel{
+				margin: 0 auto;
+				margin-bottom: 0!important;
+			}
+			.verify-bar-area{
+				width: auto!important;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 文字验证 -->
+		<div class="sc_box">
+			<div class="rucian_yzm">
+				<div id="demo"></div>
+			</div>
+		</div>
+		<script>
+			$('#demo').pointsVerify({        //pointsVerify 选字验证
+			//滑动验证码type=1，拼图验证码type=2
+			   type : 2,
+			//     type : 1,
+					vOffset : 2,   //误差
+			//     defaultNum : 4,  //图片文字的数量
+			//     checkNum : 4,    //选择文字的数量
+			//      mode : 'pop',
+			   imgUrl : '__STATIC__/index/images/',
+			   //拼图验证码或选择验证码图片名称
+			   imgName : ['1.jpg', '2.jpg'],
+			   blockSize : {   //滑块图片大小
+				   width: '50px',
+				   height: '50px',
+				   },
+			   //拼图验证码的图片尺寸
+			   imgSize : {
+				 width: '350px',
+				 height: '210px',
+			   },
+			
+			   //验证成功以后的回调
+			   success : function() {
+					console.log('验证成功')
+				
+				 });
+			   },
+			   error : function() {    //验证失败
+				   console.log('验证码不匹配')
+			   }
+			});
+			$('.sc_box').click(function(){
+				$(this).hide()
+			})   
+			
+			$('.rucian_yzm').click(function(event){
+				event.stopPropagation();    //  阻止事件冒泡
+			}) 
+		</script>
+	</body>
+</html>

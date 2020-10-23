@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div>{{pmsg}}</div>
+    <menu-item title='这个是来自父组件的值'></menu-item>
+    <menu-item :title='ptitle' content='hello'></menu-item>
+	
+	<hr >
+	<third-com :test-title='ptitle'></third-com>
+	<hr >
+	<!-- 
+		:pnum='12' :pboo='true'加绑定的，可以转换为对应的类型
+	 -->
+	<menu-item :pstr='pstr' :pnum='12' :pboo='true' :parr="parr" :pobj='pobj'></menu-item>
+  </div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript">
+    /*
+      父组件向子组件传值-基本使用
+	  props  单向设置流的数据
+	  1.用于接受父组件传递过来的数据
+	  2.在原本的html文本中，不区分大小写，只能用-的形式来书写
+	  3.接收的时候可以用驼峰命名法
+	  
+	  :title是自组件的变量名，ptitle是父组件的值
+	  <menu-item :title='ptitle' content='hello'></menu-item>
+    */
+ 
+    Vue.component('menu-item', {
+      props: ['title', 'content'],
+      data: function() {
+        return {
+          msg: '子组件本身的数据'
+        }
+      },
+      template: '<div>{{msg + "----" + title + "-----" + content}}</div>'
+    });
+	
+	// 命名规范
+	Vue.component('third-com', {
+		   props: ['testTitle'],
+		   template: '<div>{{testTitle}}</div>'
+	})
+	
+	Vue.component('menu-item', {
+		props: ['pstr','pnum', 'pboo', 'parr', 'pobj'],
+		template: `
+			<div>
+			  <div>{{pstr}}</div>
+			  <div>{{12 + pnum}}</div>
+			  <div>{{typeof pboo}}</div>
+			  <ul>
+			    <li :key='index' v-for='(item,index) in parr'>{{item}}</li>
+			  </ul>
+			    <span>{{pobj.name}}</span>
+			    <span>{{pobj.age}}</span>
+			  </div>
+			</div>
+		`
+	})
+	
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        pmsg: '父组件中内容',
+        ptitle: '动态绑定属性',
+		parr: ['apple', 'banner', 'orange'],
+		pobj: {
+			name: 'list',
+			age: 12
+		}
+      }
+    });
+  </script>
+</body>
+</html>

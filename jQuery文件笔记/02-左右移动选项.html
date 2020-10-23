@@ -1,0 +1,62 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>左右移动选项</title>
+    <style>
+        select {
+            width: 200px;
+            height: 300px;
+            font-size: 22px;
+            background-color: #80ff45;
+        }
+    </style>
+    
+</head>
+<body>
+	<!-- 第一个选择框的内容 -->
+    <select name="" id="sel1" size="4" multiple>
+        <option value="">香蕉</option>
+        <option value="">大鸭梨</option>
+        <option value="">苹果</option>
+        <option value="">大西瓜</option>
+    </select>
+	<!-- 转换的按钮 -->
+    <button>&gt;&gt;&gt;</button>//全选左
+    <button>&lt;&lt;&lt;</button>
+    <button>&gt;</button>//单选左
+    <button>&lt;</button>
+	<!-- 第二个的复选框 -->
+    <select name="" id="sel2" size="4" multiple></select>
+	<script src="js/jq.main.js"></script>
+	<script>
+		jQuery(window).ready(function () {
+			//需求1：点击前两个按钮，一侧的所有option移动到另一侧的select标签中;
+			//需求2：点击后两个按钮，一侧的所有option中"被选中"的全部移动到另一侧的select标签中;
+			$('button').eq(0).click(function(){
+				//将sel1中的所有opction的内容都转化到sel2中
+				$('#sel2').append($("#sel1>option"))
+			})
+			$('button').eq(1).click(function(){
+				$("#sel1").append($("#sel2>option"))
+			})
+			// 将选择的类别..选中
+			$('Button').eq(3).click(function(){
+				$("#sel2").append($("#sel1>option:selected"))
+			})
+			$('Button').eq(4).click(function(){
+				$("#sel1").append($("#sel2>option:selected"))
+			})
+			//优化封装;
+//            function fn(str1,str2) {
+//                //右侧所有option全部移动到左侧select中(不用for循环)
+//                $(str1).append($(str2));
+//            }
+		});
+	</script>
+
+
+
+</body>
+</html>

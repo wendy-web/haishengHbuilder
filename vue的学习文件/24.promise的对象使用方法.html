@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>异步promise的编程</title>
+</head>
+<body>
+  <div id="app">前后端的交互</div>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+	/*
+		promise的基本使用
+		是一个方法也是一个对象
+	*/
+   
+	function queryData(url) {
+		return new Promise(function(resolve, reject){
+			var xhr = new XMLHttpRequest()
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState != 4) return;
+				if(xhr.readyState == 4 && xhr.status == 200) {
+					// 处于正常的情况下
+					resolve(xhr.responseText)
+				} else{
+					// 处于异常的情况
+					reject('服务器错误')
+				}
+			}
+			xhr.open('get', url)
+			xhr.send(null)
+		})
+	}
+	var p1 = queryData('http://localhost:3000/a1');
+	var p2 = queryData('http://localhost:3000/a2');
+	var p3 = queryData('http://localhost:3000/a3');
+	// all是三个都执行完后,才执行then
+	// Promise.all([p1,p2,p3]).then(function(result){
+	//   console.log(result)
+	// })
+	// race是一个执行完就执行then
+	Promise.race([p1,p2,p3]).then(function(result){
+	  console.log(result)
+	})
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+		     // 点击图片
+		        $('.small').click(function () {
+		            // alert(3333)
+		            var date = new Date();
+		            var time = date.getTime();
+		            var url = $(this).attr('src'); //获取路径(根据自己需求获取)
+		            // alert(url)
+		            // ---------------------------
+		            if(!hasPermission()){
+		                // alert("缺少必要权限");
+		                requestPermission();
+		                return;
+		            }
+		            // 底部弹出框
+		            api.actionSheet({
+		                title: '是否保存图片到本地？',//提示是否要保存到本地
+		                cancelTitle: '取消',
+		                buttons: ['是']
+		            }, function (ret, err) {
+		                if (ret.buttonIndex == 1) {
+		                    // 下载文件
+		                    api.download({
+		                        url: url,//下载地址
+		                        // savePath: 'fs://test'+time+'.jpg',//存储路径，不传时使用自动创建的路径
+		                        report: true,       //下载过程是否上报
+		                        cache: true,        //是否使用本地缓存
+		                        allowResume: true  //是否允许断点续传
+		                    }, function (ret, err) {
+		                        if (ret.state == 1) {
+		                            /* api.toast({ msg : '图片下载成功'});*/
+		                            // 保存图片和视频到系统相册
+		                            api.saveMediaToAlbum({
+		                                path: ret.savePath,
+		                            }, function (ret, err) {
+		                                if (ret && ret.status) {
+		                                    alert('图片已成功保存到相册');
+		                                } else {
+		                                    alert('图片保存到相册失败');
+		                                }
+		                            });
+		                        }
+		                    });
+		                }
+		
+		            });
+		            // -----------------------
+		        })
+		
+		        function requestPermission(){
+		            api.requestPermission({
+		                list:['storage'],
+		                code:1
+		            }, function(ret, err){
+		               
+		            });
+		        }
+		
+		        function hasPermission(){
+		            var resultList = api.hasPermission({
+		                list:['storage']
+		            });
+		        
+		            for (let index = 0; index < resultList.length; index++) {
+		                const element = resultList[index];
+		                if(!element.granted){
+		                    return false;
+		                }
+		            }
+		            return true;
+		        }
+		</script>
+	</body>
+</html>

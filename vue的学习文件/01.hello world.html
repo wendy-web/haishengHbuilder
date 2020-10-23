@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>vue的引入</title>
+		<style type="text/css">
+			/* 设置其样式 */
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<!-- 
+				不添加v-cloak的话会出现闪屏的现象
+				添加的v-cloak指令是减少一进页面的闪动
+				背后的原理：先通过样式隐藏内容，然后在内存中进行值的替换，替换好之后再显示最终的结果
+			-->
+			<p v-cloak>{{msg}}</p>
+				
+			/*
+			  1、v-text指令用于将数据填充到标签中，作用于插值表达式类似，但是没有闪动问题
+			  2、v-html指令用于将HTML片段填充到标签中，但是可能有安全问题
+			  3、v-pre用于显示原始信息
+			*/
+			<div v-text="msg"></div>
+			<div v-html="msg"></div>
+			<div v-pre>{{msg}}</div>
+			<div>
+				显示的后期不能进行修改，提高性能
+				<p v-once>{{noRepaireText}}</p>
+			</div>
+			<div>
+				<input type="text" v-model="inputValue" />
+				<p>{{inputValue}}</p>
+			</div>
+			<div>
+				<div>显示的number {{num}}</div>
+				<button v-on:click="num++">点击</button>
+				<button @click='num++'>点击1</button>
+				<button @click='handle'>点击2</button>
+				<button @click='handle()'>点击3</button>
+			</div>
+			<div>
+				<!-- 事件的绑定  -->
+				<!-- 如果事件绑定函数调用，那么事件对象必须作为最后一个参数显示传递，并且事件对象的名称必须是$event -->
+				<button v-on:click='handle1'>点击1</button>
+				<button v-on:click='handle2(123, 456, $event)'>点击2</button>
+			</div>
+			<div>
+				<!-- 事件的修饰符 -->
+				<!--阻止事件的冒泡 -->
+				<button v-on:click.stop='handle1'>点击1</button>
+				<!-- 阻止事件的默认行为 -->
+				<a href="http://www.baidu.com" v-on:click.prevent='handle2'>百度</a>
+				
+				
+				
+				<!-- 点击delete键时进行执行clearContent的方法  -->
+				<input type="text" v-on:keyup.delete='clearContent' v-model='uname'>
+				<!-- 点击a键时进行执行clearContent的方法  -->
+				<input type="text" v-on:keyup.65='handleSubmit' v-model='pwd'>
+				<!-- 自定义点击的符号的点击命名 -->
+				<input type="text" v-on:keyup.aaaa='handleSubmit' v-model='pwd'>
+			</div>
+			<!-- 绑定属性 -->
+			<div>
+				<a v-bind:href="url">百度</a>
+				<a :href="url">切换后的传智地址</a>
+				<button v-on:click='reactUrl'>切换url的链接地址</button>
+			</div>
+			<!-- v-mode的本质 -->
+			<div>
+				<div>{{modeValue}}</div>
+				<input type="text" v-bind:value="modeValue" v-on:input='modeValueHandle'>
+				<input type="text" v-bind:value="modeValue" v-on:input='modeValue=$event.target.value'>
+				<input type="text" v-model='modeValue'>
+			</div>
+		</div>
+		
+		
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			// vue的使用
+			// id为app的标签，用于填充数据
+			// 引用vue的js文件
+			Vue.config.keyCodes.aaaa = 65
+			var vue = new  Vue({
+				el:'#app',
+				data: {
+					msg: 'hell world',
+					htmlMsg: '<h1>html</h1>',
+					noRepaireText: 'wendy',
+					inputValue: '输入内容',
+					num: 0,
+					url: 'http://www.baidu.com',
+					modeValue: 'initial'
+				},
+				// 定义一些事件的方法
+				methods:{
+					handle(){
+						console.log("点击事件的方法")
+						this.num++;
+					},
+					handle1: function(event) {
+					    console.log(event.target.innerHTML)
+					},
+					handle2: function(p, p1, event) {
+					    console.log(p, p1)
+					    console.log(event.target.innerHTML)
+					    this.num++;
+					},
+					clearContent:function(){
+					  // 按delete键的时候，清空用户名
+					  this.uname = '';
+					},
+					handleSubmit(){
+						console.log(56411)
+					},
+					reactUrl(){
+						// 修改URL地址
+						this.url = 'http://itcast.cn';
+					},
+					// mode的绑定的原理,小程序中没有v-mode的概念
+					modeValueHandle(event) {
+						this.modeValue = event.target.value;
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

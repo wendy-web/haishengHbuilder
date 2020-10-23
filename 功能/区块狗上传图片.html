@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<style>
+			.Rucian_DivFle{height: 10rem;margin: 0 3% .75rem 3%;border-radius: .25rem;border: 1px dashed rgb(195, 195, 195); background-color: rgb(240, 240, 240);position: relative;}
+			.Rucian_DivFle #Rucian_File{position: absolute;width: 100%;height: 100%;opacity: 0;z-index: 3;}
+			.Rucian_B64{position: absolute;height: 100%;width: 100%;border-radius: .25rem;display: none;}
+		</style>
+		<div class="Rucian_DivFle flex flex-center qcode"  >
+		    <div>上传付款截图</div>
+		    <input type="file" id="Rucian_File" name="file"> 
+		    <input type="hidden" class="qcode" value=""> 
+		    <img src="" alt="" class="Rucian_B64" style="display:block;">
+		</div>
+		
+		<div class="register" >提交</div>
+		<script>
+			/*图片上传*/
+			$('#Rucian_File').change(function() {
+			    var element = $(this);
+				var id = $(this).attr("id")
+			    var load = layer.open({type: 2, shadeClose: false,});//打开加载弹窗
+			    $.ajaxFileUpload({
+			        url: "{:url('/upload/afu_image/file')}",
+			        data: {file: "Rucian_File"},
+			        secureuri: false, 
+			        fileElementId: id, 
+			        dataType: 'json', 
+			        success: function(res, status) {
+			            // core.removeLoading();
+			            if( status != 'success' ){
+			                layerMsg(res.info); //图片上传失败
+			                return;
+			            }
+			            $('.Rucian_B64').attr('src', res.path).css('display', 'block');
+						//当我在往后台传值，往其他页面传值的时候，需要把ID也传过去，这个时候就可以定义一个隐藏域放入ID即可。这是一个存放ID的区域
+			            $('.qcode').val(res.id);
+			            layer.close(load); //关闭加载页面
+			        }, 
+			        error: function(data, status, e) {
+			            layer.close(load);
+			            layerMsg('上傳失敗');
+			        }
+			    });
+			});
+			
+			/* 提交 */
+			$('.register').click(function() {
+				var type = $('.selPlay select').val();
+			    var element = $(this);//检验出售资产的数量
+			    var amount = $('#Rucian_number').val()//检验出售资产的数量
+			    var qcode = $('input[class="qcode"]').val();
+			    if ($(element).attr('saving')) {
+			        return ;
+			    }
+			    if (amount == '') {
+			        layerMsg('请输入充值数量')
+			        return;
+			    }
+			    if (amount < {$top_min}) {
+			        layerMsg('充值数量不得小于'+{$top_min})
+			        return;
+			    }
+			    if (qcode == '') {
+			        layerMsg('请上传付款截图')
+			        return;
+			    }
+			    $(element).attr('saving', '1');
+			    $.post('{:url('topData')}', {
+			    	type:type,
+			        amount: amount,
+			        qcode:qcode,
+			    }, function(res) {
+			        if (res.code == 1) {
+			            layerMsg('上传完成');
+			            setTimeout(function() {
+			                location.reload();
+			            }, 1500);
+			        } else {
+			            layerMsg(res.msg);
+			            $(element).removeAttr('saving');
+			        }
+			    });
+			});
+			
+		</script>
+	</body>
+</html>
